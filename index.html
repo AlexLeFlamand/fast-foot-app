@@ -52,445 +52,143 @@
             z-index: 100;
         }
         .header-inner {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            max-width: 900px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .logo-area { display: flex; align-items: center; gap: 14px; }
         .logo-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
+            width: 48px; height: 48px; border-radius: 50%;
             background: var(--grass);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 20px;
-            color: var(--pitch);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 20px; color: var(--pitch);
             border: 2px solid var(--paper);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            overflow: hidden;
-            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); overflow: hidden;
         }
-        .logo-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .logo-title h1 {
-            margin: 0;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .logo-title p {
-            margin: 2px 0 0;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--grass-2);
-            font-weight: 700;
-        }
-        .header-badge {
-            background: rgba(255, 255, 255, 0.12);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        .logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .logo-title h1 { margin: 0; font-size: 22px; font-weight: 800; text-transform: uppercase; }
+        .logo-title p { margin: 2px 0 0; font-size: 11px; text-transform: uppercase; color: var(--grass-2); font-weight: 700; }
+        .header-badge { background: rgba(255, 255, 255, 0.12); padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* Container */
-        .container {
-            max-width: 900px;
-            margin: 24px auto 0;
-            padding: 0 16px;
-        }
+        .container { max-width: 900px; margin: 24px auto 0; padding: 0 16px; }
 
         /* Login Screen */
         #login-screen {
-            max-width: 440px;
-            margin: 60px auto;
-            background: var(--paper);
-            padding: 32px;
-            border-radius: 24px;
-            box-shadow: var(--shadow-lg);
-            border: 2px solid var(--line);
+            max-width: 440px; margin: 60px auto; background: var(--paper); padding: 32px;
+            border-radius: 24px; box-shadow: var(--shadow-lg); border: 2px solid var(--line);
         }
-        #login-screen h2 {
-            margin-top: 0;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--pitch);
-            text-transform: uppercase;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--ink-soft);
-            text-transform: uppercase;
-        }
+        #login-screen h2 { margin-top: 0; font-size: 24px; font-weight: 800; color: var(--pitch); text-transform: uppercase; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--ink-soft); text-transform: uppercase; }
         .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: 2px solid var(--line);
-            background: white;
-            font-size: 15px;
-            font-family: inherit;
-            color: var(--ink);
-            outline: none;
-            transition: all 0.2s;
+            width: 100%; padding: 12px 16px; border-radius: 12px; border: 2px solid var(--line);
+            font-size: 15px; font-family: inherit; outline: none; transition: all 0.2s;
         }
-        .form-group input:focus {
-            border-color: var(--grass);
-            box-shadow: 0 0 0 3px rgba(111, 185, 44, 0.2);
-        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--grass); }
         .btn-primary {
-            background: var(--grass);
-            color: var(--pitch);
-            border: none;
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 15px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(111, 185, 44, 0.3);
+            background: var(--grass); color: var(--pitch); border: none; width: 100%;
+            padding: 14px; border-radius: 12px; font-weight: 800; font-size: 15px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display:inline-block; text-align:center; text-decoration:none;
         }
-        .btn-primary:hover {
-            background: var(--grass-hover);
-            transform: translateY(-1px);
-        }
+        .btn-primary:hover { background: var(--grass-hover); transform: translateY(-1px); }
 
         /* User Profile Bar */
         .user-card {
-            background: var(--paper);
-            border-radius: 20px;
-            padding: 18px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-            border: 2px solid var(--line);
+            background: var(--paper); border-radius: 20px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow); margin-bottom: 24px; border: 2px solid var(--line);
         }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .user-avatar-container {
-            position: relative;
-            cursor: pointer;
-        }
+        .user-info { display: flex; align-items: center; gap: 14px; }
+        .user-avatar-container { position: relative; cursor: pointer; }
         .user-avatar {
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            background: var(--pitch);
-            color: var(--paper);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
-            overflow: hidden;
-            border: 2px solid var(--grass);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 60px; height: 60px; border-radius: 50%; background: var(--pitch); color: var(--paper);
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;
+            overflow: hidden; border: 2px solid var(--grass); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .avatar-edit-overlay {
-            position: absolute;
-            bottom: 0; right: 0;
-            background: var(--pitch);
-            color: white;
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            border: 2px solid white;
+            position: absolute; bottom: 0; right: 0; background: var(--pitch); color: white;
+            width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; border: 2px solid white;
         }
-        .user-details h3 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 700;
-        }
-        .user-details p {
-            margin: 2px 0 0;
-            font-size: 13px;
-            color: var(--ink-soft);
-        }
-        .badges-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .badge {
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+        .user-details h3 { margin: 0; font-size: 16px; font-weight: 700; }
+        .badges-row { display: flex; gap: 8px; align-items: center; }
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .badge-admin { background: var(--admin); color: white; }
         .badge-player { background: var(--grass); color: var(--pitch); }
-        .btn-icon {
-            background: none;
-            border: 1px solid var(--line);
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--ink-soft);
-            transition: all 0.2s;
-        }
-        .btn-icon:hover { background: var(--line); color: var(--ink); }
+        .btn-icon { background: none; border: 1px solid var(--line); width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--ink-soft); }
 
-        /* Navigation Tabs */
-        .tabs {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
+        /* Tabs */
+        .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
         .tab-btn {
-            background: var(--paper);
-            border: 2px solid var(--line);
-            padding: 14px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 13px;
-            text-transform: uppercase;
-            cursor: pointer;
-            color: var(--ink-soft);
-            transition: all 0.2s;
-            text-align: center;
-            box-shadow: var(--shadow);
+            background: var(--paper); border: 2px solid var(--line); padding: 14px 8px; border-radius: 16px;
+            font-weight: 800; font-size: 12px; text-transform: uppercase; cursor: pointer; color: var(--ink-soft); transition: all 0.2s; box-shadow: var(--shadow);
         }
-        .tab-btn.active {
-            background: var(--pitch);
-            color: var(--paper);
-            border-color: var(--pitch);
-            box-shadow: 0 6px 15px rgba(15, 46, 36, 0.25);
-        }
-        .tab-btn:hover:not(.active) {
-            border-color: var(--grass);
-            color: var(--ink);
-        }
-
-        /* Tab Content Panels */
+        .tab-btn.active { background: var(--pitch); color: var(--paper); border-color: var(--pitch); }
         .panel { display: none; }
         .panel.active { display: block; }
 
         /* Match Card */
-        .match-card {
-            background: var(--paper);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 2px solid var(--line);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-        .match-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        .match-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-            border-bottom: 2px dashed var(--line);
-            padding-bottom: 12px;
-        }
-        .match-date-badge {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--pitch);
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-        }
-        .match-date-badge span {
-            font-size: 12px;
-            color: var(--ink-soft);
-            font-weight: 600;
-        }
-        .location-tag {
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-        .tag-home { background: rgba(111, 185, 44, 0.2); color: #2A6010; border: 1px solid var(--grass); }
-        .tag-away { background: rgba(225, 59, 46, 0.15); color: var(--red-2); border: 1px solid var(--red); }
+        .match-card { background: var(--paper); border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); border: 2px solid var(--line); position: relative; }
+        .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 2px dashed var(--line); padding-bottom: 12px; }
+        .match-date-badge { font-size: 18px; font-weight: 800; color: var(--pitch); display: flex; align-items: baseline; gap: 8px; }
+        .match-date-badge span { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+        .location-tag { padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .tag-champ { background: rgba(111, 185, 44, 0.2); color: #2A6010; border: 1px solid var(--grass); }
         .tag-cup { background: rgba(255, 201, 74, 0.3); color: #8A6100; border: 1px solid var(--cheese); }
 
-        .teams-display {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--pitch);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .teams-display .vs {
-            font-size: 13px;
-            color: var(--ink-soft);
-            font-weight: 600;
-            background: var(--line);
-            padding: 2px 8px;
-            border-radius: 6px;
-        }
-        .match-meta {
-            font-size: 13px;
-            color: var(--ink-soft);
-            margin-bottom: 18px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .match-meta div {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .teams-display { font-size: 20px; font-weight: 800; color: var(--pitch); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+        .teams-display .vs { font-size: 14px; background: var(--line); padding: 4px 10px; border-radius: 8px; }
+        
+        .score-display {
+            background: var(--pitch); color: var(--paper); padding: 4px 12px; border-radius: 8px; font-size: 18px; font-weight: 800;
         }
 
-        /* Map Buttons */
-        .map-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-        .btn-map {
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            text-align: center;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            border: 2px solid var(--line);
-            background: white;
-            color: var(--ink);
-            transition: all 0.2s;
-        }
-        .btn-map:hover {
-            border-color: var(--pitch);
-            background: var(--line);
-        }
+        .stats-summary { background: rgba(0,0,0,0.03); padding: 12px; border-radius: 12px; margin-bottom: 16px; font-size: 13px; border: 1px solid var(--line); }
+        .stats-summary div { margin-bottom: 4px; }
+        
+        .map-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+        .btn-map { padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 700; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; border: 2px solid var(--line); background: white; color: var(--ink); }
 
-        /* Presence Box */
-        .presence-box {
-            background: white;
-            border-radius: 14px;
-            padding: 14px;
-            border: 2px solid var(--line);
-        }
-        .presence-title {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            margin-bottom: 10px;
-        }
-        .presence-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .p-btn {
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            border: 2px solid var(--line);
-            background: var(--paper);
-            color: var(--ink-soft);
-            text-align: center;
-            transition: all 0.2s;
-        }
+        .presence-box { background: white; border-radius: 14px; padding: 14px; border: 2px solid var(--line); }
+        .presence-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+        .p-btn { padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; border: 2px solid var(--line); background: var(--paper); color: var(--ink-soft); text-align: center; }
         .p-btn.active-present { background: var(--present); color: white; border-color: var(--present); }
         .p-btn.active-uncertain { background: var(--uncertain); color: white; border-color: var(--uncertain); }
         .p-btn.active-absent { background: var(--absent); color: white; border-color: var(--absent); }
+        .presence-stats { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 10px; }
 
-        .presence-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--ink-soft);
-            border-top: 1px solid var(--line);
-            padding-top: 10px;
-        }
+        .btn-admin-edit { background: var(--admin); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-transform: uppercase; float: right; }
 
-        /* Roster / Admin Panel */
-        .roster-card {
-            background: var(--paper);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            border: 2px solid var(--line);
-        }
-        .roster-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 14px;
-        }
-        .roster-table th, .roster-table td {
-            padding: 12px 14px;
-            text-align: left;
-            border-bottom: 1px solid var(--line);
-            font-size: 14px;
-        }
-        .roster-table th {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            font-weight: 800;
-            background: rgba(22,32,27,0.03);
-        }
+        /* Tables */
+        .roster-card { background: var(--paper); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); border: 2px solid var(--line); margin-bottom: 20px;}
+        .roster-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+        .roster-table th, .roster-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); font-size: 14px; }
+        .roster-table th { font-size: 12px; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; background: rgba(22,32,27,0.03); }
 
-        @media(max-width: 600px) {
-            .tabs { grid-template-columns: 1fr; }
-            .presence-buttons { grid-template-columns: 1fr; }
-            .map-buttons { grid-template-columns: 1fr; }
+        /* Ranking Cards */
+        .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width: 768px) { .rank-grid { grid-template-columns: 1fr; } .tabs { grid-template-columns: 1fr 1fr; } }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 46, 36, 0.7); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
         }
+        .modal {
+            background: var(--paper); width: 90%; max-width: 480px; border-radius: 24px;
+            padding: 24px; box-shadow: var(--shadow-lg); border: 2px solid var(--line);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal h3 { margin-top: 0; font-size: 20px; color: var(--pitch); font-weight: 800; border-bottom: 2px solid var(--line); padding-bottom: 10px;}
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-cancel { background: var(--line); color: var(--ink); border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+
+        /* Canvas Editor */
+        #avatar-canvas { border: 2px dashed var(--line); border-radius: 12px; margin: 10px auto; display: block; background: #fff; cursor: crosshair;}
+        
+        .stat-input-row { display: flex; gap: 10px; align-items: end; margin-bottom: 12px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; border: 1px solid var(--line);}
+        .stat-list { font-size: 13px; margin-bottom: 16px; }
+        .stat-list li { margin-bottom: 4px; display: flex; justify-content: space-between; background: white; padding: 6px; border-radius: 6px; border: 1px solid var(--line);}
+        .btn-small { background: var(--pitch); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 700;}
     </style>
 </head>
 <body>
@@ -499,32 +197,25 @@
         <div class="header-inner">
             <div class="logo-area">
                 <div class="logo-avatar" id="header-avatar-initials">
-                    <img src="Logo.jpeg" alt="Logo Fast Foot">
+                    <!-- Si l'image n'est pas trouvée, un logo par défaut se charge -->
+                    <img src="Logo.jpeg" onerror="this.src='https://ui-avatars.com/api/?name=FF&background=6FB92C&color=0F2E24'" alt="Logo Fast Foot">
                 </div>
                 <div class="logo-title">
                     <h1 id="app-title-text">Fast Foot</h1>
-                    <p>Calendrier & Présences • Saison 2026/27</p>
+                    <p>Calendrier & Stats • Saison 26/27</p>
                 </div>
             </div>
-            <div class="header-badge">
-                <span>⚽ 24 Matchs</span>
-            </div>
+            <div class="header-badge"><span>⚽ 24 Matchs</span></div>
         </div>
     </header>
 
     <div class="container">
-
         <!-- LOGIN SCREEN -->
         <div id="login-screen">
             <h2>Espace Membre Fast Foot</h2>
-            <p style="font-size: 13px; color: var(--ink-soft); margin-bottom: 20px;">
-                Sélectionnez votre profil ou entrez votre adresse email pour accéder à votre espace privé et gérer vos présences.
-            </p>
             <div class="form-group">
-                <label>Votre Profil / Email</label>
-                <select id="login-select">
-                    <!-- Populated via JS -->
-                </select>
+                <label>Votre Profil</label>
+                <select id="login-select"></select>
             </div>
             <div class="form-group">
                 <label>Mot de passe</label>
@@ -536,150 +227,206 @@
         <!-- MAIN APP VIEW -->
         <div id="app-main-view" style="display: none;">
             
-            <!-- User Bar -->
             <div class="user-card">
                 <div class="user-info">
                     <div class="user-avatar-container" onclick="document.getElementById('avatar-file-input').click()" title="Changer ma photo de profil">
-                        <div class="user-avatar" id="user-profile-avatar">
-                            <!-- Populated via JS -->
-                        </div>
+                        <div class="user-avatar" id="user-profile-avatar"></div>
                         <div class="avatar-edit-overlay">📷</div>
                     </div>
                     <input type="file" id="avatar-file-input" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
                     <div class="user-details">
-                        <h3 id="user-profile-name">Alexandre Spletinckx</h3>
-                        <p id="user-profile-email">alex.spletinckx@gmail.com</p>
-                        <p style="font-size: 11px; color: var(--grass-2); margin: 2px 0 0; font-weight: 600;">💡 Cliquez sur votre avatar pour changer votre photo</p>
+                        <h3 id="user-profile-name">Nom</h3>
+                        <p id="user-profile-email">Email</p>
+                        <p style="font-size: 11px; color: var(--grass-2); margin: 2px 0 0; font-weight: 600;">💡 Cliquez sur l'image pour cadrer votre photo</p>
                     </div>
                 </div>
                 <div class="badges-row">
-                    <div id="user-role-badge" class="badge badge-admin">Admin</div>
+                    <div id="user-role-badge" class="badge"></div>
                     <button class="btn-icon" title="Se déconnecter" onclick="handleLogout()">🚪</button>
                 </div>
             </div>
 
-            <!-- Navigation Tabs -->
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('matches')">📅 Calendrier Matchs</button>
-                <button class="tab-btn" onclick="switchTab('roster')">👥 Effectif Joueurs</button>
-                <button class="tab-btn" onclick="switchTab('admin')" id="tab-btn-admin" style="display:none;">🔒 Administration</button>
+                <button class="tab-btn active" onclick="switchTab('matches')">📅 Calendrier</button>
+                <button class="tab-btn" onclick="switchTab('stats')">🏆 Classements</button>
+                <button class="tab-btn" onclick="switchTab('roster')">👥 Effectif</button>
+                <button class="tab-btn" onclick="switchTab('admin')" id="tab-btn-admin" style="display:none;">🔒 Admin</button>
             </div>
 
             <!-- TAB 1: MATCHS -->
             <div id="panel-matches" class="panel active">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h2 style="font-size: 18px; margin:0; color: var(--pitch);">Calendrier Officiel (Saison & Coupe)</h2>
-                    <span id="match-filter-status" style="font-size: 12px; font-weight: 700; color: var(--ink-soft);">24 Matchs enregistrés</span>
-                </div>
-                <div id="matches-container">
-                    <!-- Rendered via JS -->
+                <a href="https://botroul.be/division_view.php?div=1&calendrier=" target="_blank" class="btn-primary" style="margin-bottom: 20px;">📊 Voir le Classement Officiel Botroul</a>
+                <div id="matches-container"></div>
+            </div>
+
+            <!-- TAB 2: STATS & CLASSEMENTS -->
+            <div id="panel-stats" class="panel">
+                <div class="rank-grid">
+                    <div class="roster-card">
+                        <h3 style="margin-top:0; color:var(--pitch);">⚽ Top Buteurs</h3>
+                        <table class="roster-table" id="table-buteurs"><tbody></tbody></table>
+                    </div>
+                    <div class="roster-card">
+                        <h3 style="margin-top:0; color:var(--pitch);">👟 Top Passeurs</h3>
+                        <table class="roster-table" id="table-passeurs"><tbody></tbody></table>
+                    </div>
+                    <div class="roster-card">
+                        <h3 style="margin-top:0; color:var(--pitch);">🟨🟥 Cartons</h3>
+                        <table class="roster-table" id="table-cartons"><tbody></tbody></table>
+                    </div>
+                    <div class="roster-card">
+                        <h3 style="margin-top:0; color:var(--red);">💩 Boulet du Match</h3>
+                        <table class="roster-table" id="table-boulets"><tbody></tbody></table>
+                    </div>
                 </div>
             </div>
 
-            <!-- TAB 2: ROSTER -->
+            <!-- TAB 3: ROSTER -->
             <div id="panel-roster" class="panel">
                 <div class="roster-card">
-                    <h2 style="font-size: 18px; margin-top:0; color: var(--pitch);">Effectif Officiel - Fast Foot</h2>
-                    <p style="font-size: 13px; color: var(--ink-soft);">Liste complète des joueurs et membres inscrits pour la saison.</p>
+                    <h2 style="font-size: 18px; margin-top:0;">Effectif Officiel</h2>
                     <div style="overflow-x: auto;">
                         <table class="roster-table" id="roster-table-el">
-                            <thead>
-                                <tr>
-                                    <th>Joueur</th>
-                                    <th>Affiliation</th>
-                                    <th>Téléphone</th>
-                                    <th>Rôle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Populated via JS -->
-                            </tbody>
+                            <thead><tr><th>Joueur</th><th>Affiliation</th><th>Téléphone</th><th>Rôle</th></tr></thead>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 3: ADMIN -->
+            <!-- TAB 4: ADMIN -->
             <div id="panel-admin" class="panel">
                 <div class="roster-card">
-                    <h2 style="font-size: 18px; margin-top:0; color: var(--pitch);">Console Administrateur</h2>
-                    <p style="font-size: 13px; color: var(--ink-soft);">Gestion globale des présences de l'équipe et paramètres de l'application.</p>
-                    <div style="background: white; padding: 16px; border-radius: 12px; border: 2px solid var(--line); margin-top: 14px;">
-                        <h4 style="margin: 0 0 8px; color: var(--pitch);">Statistiques Globales</h4>
-                        <p style="margin: 0; font-size: 13px; color: var(--ink-soft);">Total de 24 rencontres programmées pour la saison (Championnat + Coupe Marcel Verhelst).</p>
-                        <button class="btn-primary" style="margin-top: 14px; width: auto; padding: 10px 20px;" onclick="alert('Export des feuilles de présence en cours...')">Exporter les présences</button>
-                    </div>
+                    <h2 style="font-size: 18px; margin-top:0;">Console Administrateur</h2>
+                    <p style="font-size: 13px; color: var(--ink-soft);">Les boutons d'édition des matchs se trouvent directement dans l'onglet Calendrier.</p>
                 </div>
             </div>
 
         </div>
     </div>
 
+    <!-- MODAL AVATAR CROPPER -->
+    <div class="modal-overlay" id="modal-avatar">
+        <div class="modal">
+            <h3>Cadrer ma photo</h3>
+            <p style="font-size: 12px; color: var(--ink-soft);">Utilisez le curseur pour zoomer.</p>
+            <canvas id="avatar-canvas" width="200" height="200"></canvas>
+            <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1" style="width:100%; margin: 16px 0;" oninput="drawCanvas()">
+            <div class="modal-buttons">
+                <button class="btn-primary" onclick="saveAvatar()">Sauvegarder</button>
+                <button class="btn-cancel" onclick="closeAvatarModal()">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN MATCH STATS -->
+    <div class="modal-overlay" id="modal-match-stats">
+        <div class="modal" style="max-width: 550px;">
+            <h3>Éditer le Match <span id="admin-match-code" style="color:var(--grass);"></span></h3>
+            
+            <div class="form-group" style="display:flex; gap: 10px; align-items:center;">
+                <label style="margin:0;">Score Fast Foot :</label>
+                <input type="number" id="admin-score-ff" style="width: 70px;">
+                <label style="margin:0;">Score Adversaire :</label>
+                <input type="number" id="admin-score-opp" style="width: 70px;">
+            </div>
+
+            <hr style="border:none; border-top: 1px dashed var(--line); margin: 20px 0;">
+            
+            <h4>⚽ Ajouter un But</h4>
+            <div class="stat-input-row">
+                <div style="flex:1;">
+                    <label>Buteur</label>
+                    <select id="sel-buteur" class="player-select"><option value="">-- Choisir --</option></select>
+                </div>
+                <div style="flex:1;">
+                    <label>Passeur</label>
+                    <select id="sel-passeur" class="player-select"><option value="">-- Aucun --</option></select>
+                </div>
+                <button class="btn-small" onclick="addGoal()">+</button>
+            </div>
+            <ul class="stat-list" id="list-goals"></ul>
+
+            <hr style="border:none; border-top: 1px dashed var(--line); margin: 20px 0;">
+
+            <h4>🟨/🟥 Ajouter un Carton</h4>
+            <div class="stat-input-row">
+                <div style="flex:1;">
+                    <label>Joueur</label>
+                    <select id="sel-carton-joueur" class="player-select"><option value="">-- Choisir --</option></select>
+                </div>
+                <div style="flex:1;">
+                    <label>Couleur</label>
+                    <select id="sel-carton-couleur">
+                        <option value="jaune">🟨 Jaune</option>
+                        <option value="rouge">🟥 Rouge</option>
+                    </select>
+                </div>
+                <button class="btn-small" onclick="addCard()">+</button>
+            </div>
+            <ul class="stat-list" id="list-cards"></ul>
+
+            <hr style="border:none; border-top: 1px dashed var(--line); margin: 20px 0;">
+
+            <h4>💩 Boulet du Match</h4>
+            <div class="form-group">
+                <select id="sel-boulet" class="player-select"><option value="">-- Personne --</option></select>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-primary" onclick="saveMatchStats()">Valider Stats</button>
+                <button class="btn-cancel" onclick="closeMatchAdminModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const joueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alexandre", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
-        const matchsData = [{"code": "BA1033", "date": "27 SEPT.", "fullDate": "2026-09-27", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Peru Boys", "opponent": "Peru Boys", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BAC013", "date": "11 OCT.", "fullDate": "2026-10-11", "dayOfWeek": "DIM.", "time": "21h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Coupe Marcel Verhelst"}, {"code": "BAC017", "date": "18 OCT.", "fullDate": "2026-10-18", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre", "competition": "Coupe Marcel Verhelst"}, {"code": "BA1014", "date": "25 OCT.", "fullDate": "2026-10-25", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "Foxtrot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve", "competition": "Championnat (El Botroul)"}, {"code": "BA1A041", "date": "31 OCT.", "fullDate": "2026-10-31", "dayOfWeek": "SAM.", "time": "20h00", "isHome": false, "dom": "FC MJ", "ext": "Fast Foot", "opponent": "FC MJ", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre", "competition": "Championnat (El Botroul)"}, {"code": "BA1024", "date": "1 NOV.", "fullDate": "2026-11-01", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "RWD Limal", "opponent": "RWD Limal", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve", "competition": "Championnat (El Botroul)"}, {"code": "BA1A056", "date": "16 NOV.", "fullDate": "2026-11-16", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "Zozos du Foot", "ext": "Fast Foot", "opponent": "Zozos du Foot", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre", "competition": "Championnat (El Botroul)"}, {"code": "BA1A064", "date": "22 NOV.", "fullDate": "2026-11-22", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FCL Corbais", "opponent": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A074", "date": "29 NOV.", "fullDate": "2026-11-29", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "RC Border Line", "ext": "Fast Foot", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A085", "date": "6 DÉC.", "fullDate": "2026-12-06", "dayOfWeek": "DIM.", "time": "20h30", "isHome": false, "dom": "All Blacks", "ext": "Fast Foot", "opponent": "All Blacks", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre", "competition": "Championnat (El Botroul)"}, {"code": "BA1A095", "date": "13 DÉC.", "fullDate": "2026-12-13", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Ayouka", "ext": "Fast Foot", "opponent": "Ayouka", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre", "competition": "Championnat (El Botroul)"}, {"code": "BA1A103", "date": "10 JANV.", "fullDate": "2027-01-10", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "US Comete", "opponent": "US Comete", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A113", "date": "24 JANV.", "fullDate": "2027-01-24", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "Les Djogabonito", "ext": "Fast Foot", "opponent": "Les Djogabonito", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve", "competition": "Championnat (El Botroul)"}, {"code": "BA1A124", "date": "31 JANV.", "fullDate": "2027-01-31", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Foxtrot", "ext": "Fast Foot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve", "competition": "Championnat (El Botroul)"}, {"code": "BA1A134", "date": "7 FÉVR.", "fullDate": "2027-02-07", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Zozos du Foot", "opponent": "Zozos du Foot", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A142", "date": "14 FÉVR.", "fullDate": "2027-02-14", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "FCL Corbais", "ext": "Fast Foot", "opponent": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A156", "date": "8 MARS", "fullDate": "2027-03-08", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "RWD Limal", "ext": "Fast Foot", "opponent": "RWD Limal", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre", "competition": "Championnat (El Botroul)"}, {"code": "BA1A166", "date": "21 MARS", "fullDate": "2027-03-21", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "RC Border Line", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A175", "date": "28 MARS", "fullDate": "2027-03-28", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FC MJ", "opponent": "FC MJ", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A184", "date": "11 AVR.", "fullDate": "2027-04-11", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A194", "date": "25 AVR.", "fullDate": "2027-04-25", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Ayouka", "opponent": "Ayouka", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}, {"code": "BA1A202", "date": "8 MAI", "fullDate": "2027-05-08", "dayOfWeek": "SAM.", "time": "21h00", "isHome": false, "dom": "Peru Boys", "ext": "Fast Foot", "opponent": "Peru Boys", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre", "competition": "Championnat (El Botroul)"}, {"code": "BA1A213", "date": "23 MAI", "fullDate": "2027-05-23", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre", "competition": "Championnat (El Botroul)"}, {"code": "BA1A223", "date": "30 MAI", "fullDate": "2027-05-30", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Les Djogabonito", "opponent": "Les Djogabonito", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau", "competition": "Championnat (El Botroul)"}];
+        const matchsData = [{"code": "BA1033", "date": "27 SEPT.", "fullDate": "2026-09-27", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Peru Boys", "opponent": "Peru Boys", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC013", "date": "11 OCT.", "fullDate": "2026-10-11", "dayOfWeek": "DIM.", "time": "21h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC017", "date": "18 OCT.", "fullDate": "2026-10-18", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1014", "date": "25 OCT.", "fullDate": "2026-10-25", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "Foxtrot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A041", "date": "31 OCT.", "fullDate": "2026-10-31", "dayOfWeek": "SAM.", "time": "20h00", "isHome": false, "dom": "FC MJ", "ext": "Fast Foot", "opponent": "FC MJ", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1024", "date": "1 NOV.", "fullDate": "2026-11-01", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "RWD Limal", "opponent": "RWD Limal", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A056", "date": "16 NOV.", "fullDate": "2026-11-16", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "Zozos du Foot", "ext": "Fast Foot", "opponent": "Zozos du Foot", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A064", "date": "22 NOV.", "fullDate": "2026-11-22", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FCL Corbais", "opponent": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A074", "date": "29 NOV.", "fullDate": "2026-11-29", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "RC Border Line", "ext": "Fast Foot", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A085", "date": "6 DÉC.", "fullDate": "2026-12-06", "dayOfWeek": "DIM.", "time": "20h30", "isHome": false, "dom": "All Blacks", "ext": "Fast Foot", "opponent": "All Blacks", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A095", "date": "13 DÉC.", "fullDate": "2026-12-13", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Ayouka", "ext": "Fast Foot", "opponent": "Ayouka", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A103", "date": "10 JANV.", "fullDate": "2027-01-10", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "US Comete", "opponent": "US Comete", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A113", "date": "24 JANV.", "fullDate": "2027-01-24", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "Les Djogabonito", "ext": "Fast Foot", "opponent": "Les Djogabonito", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A124", "date": "31 JANV.", "fullDate": "2027-01-31", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Foxtrot", "ext": "Fast Foot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A134", "date": "7 FÉVR.", "fullDate": "2027-02-07", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Zozos du Foot", "opponent": "Zozos du Foot", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A142", "date": "14 FÉVR.", "fullDate": "2027-02-14", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "FCL Corbais", "ext": "Fast Foot", "opponent": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A156", "date": "8 MARS", "fullDate": "2027-03-08", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "RWD Limal", "ext": "Fast Foot", "opponent": "RWD Limal", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A166", "date": "21 MARS", "fullDate": "2027-03-21", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "RC Border Line", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A175", "date": "28 MARS", "fullDate": "2027-03-28", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FC MJ", "opponent": "FC MJ", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A184", "date": "11 AVR.", "fullDate": "2027-04-11", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A194", "date": "25 AVR.", "fullDate": "2027-04-25", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Ayouka", "opponent": "Ayouka", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A202", "date": "8 MAI", "fullDate": "2027-05-08", "dayOfWeek": "SAM.", "time": "21h00", "isHome": false, "dom": "Peru Boys", "ext": "Fast Foot", "opponent": "Peru Boys", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A213", "date": "23 MAI", "fullDate": "2027-05-23", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A223", "date": "30 MAI", "fullDate": "2027-05-30", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Les Djogabonito", "opponent": "Les Djogabonito", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}];
 
         let currentUser = null;
         let userPresences = JSON.parse(localStorage.getItem('ff_presences') || '{}');
         let userAvatars = JSON.parse(localStorage.getItem('ff_user_avatars') || '{}');
+        let matchStats = JSON.parse(localStorage.getItem('ff_match_stats') || '{}');
 
-        // Initialize Login Dropdown
+        function getPlayerName(email) {
+            const j = joueursData.find(x => x.email === email);
+            return j ? `${j.prenom} ${j.nom}` : email;
+        }
+
+        // Init Dropdowns
         const selectEl = document.getElementById('login-select');
+        const playerSelects = document.querySelectorAll('.player-select');
         joueursData.forEach((j) => {
-            const opt = document.createElement('option');
-            opt.value = j.email;
-            opt.textContent = `${j.prenom} ${j.nom} (${j.role})`;
+            const opt = document.createElement('option'); opt.value = j.email; opt.textContent = `${j.prenom} ${j.nom} (${j.role})`;
             if(j.email === 'alex.spletinckx@gmail.com') opt.selected = true;
             selectEl.appendChild(opt);
+            
+            playerSelects.forEach(sel => {
+                const opt2 = document.createElement('option'); opt2.value = j.email; opt2.textContent = `${j.prenom} ${j.nom}`;
+                sel.appendChild(opt2);
+            });
         });
 
         function handleLogin() {
-            const email = selectEl.value;
-            currentUser = joueursData.find(j => j.email === email) || joueursData[0];
-            
+            currentUser = joueursData.find(j => j.email === document.getElementById('login-select').value);
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main-view').style.display = 'block';
-
-            updateUserBar();
-            renderMatches();
-            renderRoster();
+            updateUserBar(); renderMatches(); renderRoster(); renderRankings();
         }
 
         function updateUserBar() {
             document.getElementById('user-profile-name').textContent = `${currentUser.prenom} ${currentUser.nom}`;
             document.getElementById('user-profile-email').textContent = currentUser.email;
-            
             const avatarDiv = document.getElementById('user-profile-avatar');
-            const customAvatar = userAvatars[currentUser.email];
-            
-            if(customAvatar) {
-                avatarDiv.innerHTML = `<img src="${customAvatar}" alt="Profil">`;
-            } else {
-                avatarDiv.innerHTML = `<img src="Logo.jpeg" alt="Logo Fast Foot">`;
-            }
+            avatarDiv.innerHTML = userAvatars[currentUser.email] 
+                ? `<img src="${userAvatars[currentUser.email]}" alt="Profil">`
+                : `<img src="Logo.jpeg" onerror="this.src='https://ui-avatars.com/api/?name=${currentUser.prenom[0]}${currentUser.nom[0]}&background=6FB92C&color=0F2E24'" alt="Logo">`;
             
             const roleBadge = document.getElementById('user-role-badge');
-            if(currentUser.isAdmin) {
-                roleBadge.textContent = 'Admin';
-                roleBadge.className = 'badge badge-admin';
-                document.getElementById('tab-btn-admin').style.display = 'block';
-            } else {
-                roleBadge.textContent = 'Joueur';
-                roleBadge.className = 'badge badge-player';
-                document.getElementById('tab-btn-admin').style.display = 'none';
-            }
-        }
-
-        function handleAvatarUpload(event) {
-            const file = event.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                userAvatars[currentUser.email] = e.target.result;
-                localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
-                updateUserBar();
-            };
-            reader.readAsDataURL(file);
+            roleBadge.textContent = currentUser.isAdmin ? 'Admin' : 'Joueur';
+            roleBadge.className = currentUser.isAdmin ? 'badge badge-admin' : 'badge badge-player';
+            document.getElementById('tab-btn-admin').style.display = currentUser.isAdmin ? 'block' : 'none';
         }
 
         function handleLogout() {
@@ -691,101 +438,200 @@
         function switchTab(tabName) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
-            if(tabName === 'matches') {
-                document.getElementById('panel-matches').classList.add('active');
-                event.currentTarget.classList.add('active');
-            } else if(tabName === 'roster') {
-                document.getElementById('panel-roster').classList.add('active');
-                event.currentTarget.classList.add('active');
-            } else if(tabName === 'admin') {
-                document.getElementById('panel-admin').classList.add('active');
-                event.currentTarget.classList.add('active');
-            }
+            document.getElementById(`panel-${tabName}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(tabName === 'stats') renderRankings();
         }
 
-        function setPresence(matchCode, status) {
-            if(!userPresences[matchCode]) userPresences[matchCode] = {};
-            userPresences[matchCode][currentUser.email] = status;
+        function setPresence(code, status) {
+            if(!userPresences[code]) userPresences[code] = {};
+            userPresences[code][currentUser.email] = status;
             localStorage.setItem('ff_presences', JSON.stringify(userPresences));
             renderMatches();
         }
 
-        function countPresences(matchCode) {
-            const m = userPresences[matchCode] || {};
-            let present = 0, uncertain = 0, absent = 0;
-            for(let email in m) {
-                if(m[email] === 'present') present++;
-                else if(m[email] === 'uncertain') uncertain++;
-                else if(m[email] === 'absent') absent++;
-            }
-            return { present, uncertain, absent };
-        }
-
         function renderMatches() {
-            const container = document.getElementById('matches-container');
-            container.innerHTML = '';
-
+            const container = document.getElementById('matches-container'); container.innerHTML = '';
             matchsData.forEach(m => {
-                const stats = countPresences(m.code);
-                const myStatus = (userPresences[m.code] || {})[currentUser.email] || '';
+                const presences = userPresences[m.code] || {};
+                let p=0, u=0, a=0;
+                for(let k in presences) { if(presences[k]==='present') p++; else if(presences[k]==='uncertain') u++; else a++; }
+                
+                const stats = matchStats[m.code];
+                let scoreHTML = `<span class="vs">vs</span>`;
+                let statsHTML = '';
+                
+                if(stats && (stats.scoreFF !== "" || stats.scoreOpp !== "")) {
+                    scoreHTML = m.isHome ? `<span class="score-display">${stats.scoreFF} - ${stats.scoreOpp}</span>` : `<span class="score-display">${stats.scoreOpp} - ${stats.scoreFF}</span>`;
+                    
+                    if(stats.goals.length > 0 || stats.cards.length > 0 || stats.boulet) {
+                        statsHTML = `<div class="stats-summary">`;
+                        if(stats.goals.length>0) statsHTML += `<div>⚽ <strong>Buts:</strong> ${stats.goals.map(g => `${getPlayerName(g.scorer)} ${g.assist ? `(passe: ${getPlayerName(g.assist)})` : ''}`).join(', ')}</div>`;
+                        if(stats.cards.length>0) statsHTML += `<div>🟨🟥 <strong>Cartons:</strong> ${stats.cards.map(c => `${getPlayerName(c.player)} (${c.type})`).join(', ')}</div>`;
+                        if(stats.boulet) statsHTML += `<div>💩 <strong>Boulet:</strong> ${getPlayerName(stats.boulet)}</div>`;
+                        statsHTML += `</div>`;
+                    }
+                }
 
-                const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(m.address)}`;
-                const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.address)}`;
-
-                const card = document.createElement('div');
-                card.className = 'match-card';
+                const cupBadge = m.code.startsWith('BAC') ? `<span class="location-tag tag-cup">🏆 Coupe Marcel Verhelst</span>` : `<span class="location-tag tag-champ">⚽ Championnat Botroul</span>`;
+                const myStatus = presences[currentUser.email];
+                
+                const card = document.createElement('div'); card.className = 'match-card';
                 card.innerHTML = `
                     <div class="match-header">
-                        <div class="match-date-badge">
-                            ${m.date} <span>${m.dayOfWeek} • ${m.time}</span>
-                        </div>
+                        <div class="match-date-badge">${m.date} <span>${m.dayOfWeek} • ${m.time}</span></div>
                         <div style="display:flex; gap:6px;">
-                            ${m.code.startsWith('BAC') ? '<span class="location-tag tag-cup">🏆 Coupe Marcel Verhelst</span>' : ''}
-                            <span class="location-tag ${m.isHome ? 'tag-home' : 'tag-away'}">${m.isHome ? 'Domicile' : 'Extérieur'}</span>
+                            ${cupBadge} <span class="location-tag ${m.isHome ? 'tag-champ' : 'tag-cup'}" style="background:transparent; color:var(--ink-soft); border-color:var(--line);">${m.isHome ? 'Domicile' : 'Extérieur'}</span>
                         </div>
                     </div>
-                    <div class="teams-display">
-                        ${m.dom} <span class="vs">vs</span> ${m.ext}
-                    </div>
-                    <div class="match-meta">
-                        <div>📍 <strong>${m.location}</strong> (${m.address})</div>
-                        <div>🔢 Réf: ${m.code}</div>
-                    </div>
+                    <div class="teams-display">${m.dom} ${scoreHTML} ${m.ext}</div>
+                    ${statsHTML}
+                    <div class="match-meta"><div>📍 <strong>${m.location}</strong> (${m.address})</div></div>
+                    ${currentUser.isAdmin ? `<button class="btn-admin-edit" onclick="openMatchAdmin('${m.code}')">⚙️ Éditer Stats</button><div style="clear:both; margin-bottom:12px;"></div>` : ''}
                     <div class="map-buttons">
-                        <a href="${wazeUrl}" target="_blank" class="btn-map">🚗 Ouvrir Waze</a>
-                        <a href="${gmapsUrl}" target="_blank" class="btn-map">🗺️ Google Maps</a>
+                        <a href="https://waze.com/ul?q=${encodeURIComponent(m.address)}" target="_blank" class="btn-map">🚗 Waze</a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.address)}" target="_blank" class="btn-map">🗺️ Google Maps</a>
                     </div>
                     <div class="presence-box">
-                        <div class="presence-title">Ma Présence pour cette rencontre</div>
                         <div class="presence-buttons">
                             <button class="p-btn ${myStatus === 'present' ? 'active-present' : ''}" onclick="setPresence('${m.code}', 'present')">Présent</button>
                             <button class="p-btn ${myStatus === 'uncertain' ? 'active-uncertain' : ''}" onclick="setPresence('${m.code}', 'uncertain')">Incertain</button>
                             <button class="p-btn ${myStatus === 'absent' ? 'active-absent' : ''}" onclick="setPresence('${m.code}', 'absent')">Absent</button>
                         </div>
-                        <div class="presence-stats">
-                            <span>🟢 ${stats.present} présent(s)</span>
-                            <span>🟡 ${stats.uncertain} incertain(s)</span>
-                            <span>🔴 ${stats.absent} absent(s)</span>
-                        </div>
+                        <div class="presence-stats"><span>🟢 ${p} présent(s)</span><span>🟡 ${u} incertain(s)</span><span>🔴 ${a} absent(s)</span></div>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
+        // --- AVATAR CANVAS EDITOR ---
+        let tempImg = new Image();
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0]; if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                tempImg.src = event.target.result;
+                tempImg.onload = () => {
+                    document.getElementById('zoom-slider').value = 1;
+                    document.getElementById('modal-avatar').style.display = 'flex';
+                    drawCanvas();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        function drawCanvas() {
+            const canvas = document.getElementById('avatar-canvas'); const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            const zoom = parseFloat(document.getElementById('zoom-slider').value);
+            const minDim = Math.min(tempImg.width, tempImg.height);
+            const w = tempImg.width * (canvas.width / minDim) * zoom;
+            const h = tempImg.height * (canvas.height / minDim) * zoom;
+            const x = (canvas.width - w) / 2;
+            const y = (canvas.height - h) / 2;
+            ctx.drawImage(tempImg, x, y, w, h);
+        }
+        function saveAvatar() {
+            userAvatars[currentUser.email] = document.getElementById('avatar-canvas').toDataURL('image/jpeg', 0.8);
+            localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
+            updateUserBar(); closeAvatarModal();
+        }
+        function closeAvatarModal() { document.getElementById('modal-avatar').style.display = 'none'; document.getElementById('avatar-file-input').value = ""; }
+
+        // --- ADMIN MATCH STATS ---
+        let currentAdminMatch = null;
+        let tempMatchStats = { scoreFF: "", scoreOpp: "", goals: [], cards: [], boulet: "" };
+
+        function openMatchAdmin(code) {
+            currentAdminMatch = code;
+            document.getElementById('admin-match-code').textContent = code;
+            tempMatchStats = matchStats[code] ? JSON.parse(JSON.stringify(matchStats[code])) : { scoreFF: "", scoreOpp: "", goals: [], cards: [], boulet: "" };
+            
+            document.getElementById('admin-score-ff').value = tempMatchStats.scoreFF;
+            document.getElementById('admin-score-opp').value = tempMatchStats.scoreOpp;
+            document.getElementById('sel-boulet').value = tempMatchStats.boulet;
+            
+            refreshAdminLists();
+            document.getElementById('modal-match-stats').style.display = 'flex';
+        }
+        function closeMatchAdminModal() { document.getElementById('modal-match-stats').style.display = 'none'; }
+        
+        function addGoal() {
+            const scorer = document.getElementById('sel-buteur').value;
+            const assist = document.getElementById('sel-passeur').value;
+            if(!scorer) return alert("Sélectionnez un buteur !");
+            tempMatchStats.goals.push({scorer, assist});
+            refreshAdminLists();
+        }
+        function addCard() {
+            const player = document.getElementById('sel-carton-joueur').value;
+            const type = document.getElementById('sel-carton-couleur').value;
+            if(!player) return alert("Sélectionnez un joueur !");
+            tempMatchStats.cards.push({player, type});
+            refreshAdminLists();
+        }
+        function removeGoal(idx) { tempMatchStats.goals.splice(idx, 1); refreshAdminLists(); }
+        function removeCard(idx) { tempMatchStats.cards.splice(idx, 1); refreshAdminLists(); }
+
+        function refreshAdminLists() {
+            const gl = document.getElementById('list-goals'); gl.innerHTML = '';
+            tempMatchStats.goals.forEach((g, i) => {
+                gl.innerHTML += `<li>⚽ ${getPlayerName(g.scorer)} ${g.assist ? `(Passe: ${getPlayerName(g.assist)})` : ''} <span onclick="removeGoal(${i})" style="cursor:pointer; color:red;">❌</span></li>`;
+            });
+            const cl = document.getElementById('list-cards'); cl.innerHTML = '';
+            tempMatchStats.cards.forEach((c, i) => {
+                cl.innerHTML += `<li>${c.type==='jaune'?'🟨':'🟥'} ${getPlayerName(c.player)} <span onclick="removeCard(${i})" style="cursor:pointer; color:red;">❌</span></li>`;
+            });
+        }
+        function saveMatchStats() {
+            tempMatchStats.scoreFF = document.getElementById('admin-score-ff').value;
+            tempMatchStats.scoreOpp = document.getElementById('admin-score-opp').value;
+            tempMatchStats.boulet = document.getElementById('sel-boulet').value;
+            
+            matchStats[currentAdminMatch] = tempMatchStats;
+            localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
+            closeMatchAdminModal();
+            renderMatches();
+            renderRankings();
+        }
+
+        // --- RANKINGS ---
+        function renderRankings() {
+            let buteurs = {}, passeurs = {}, cartons = {}, boulets = {};
+            
+            Object.values(matchStats).forEach(s => {
+                s.goals.forEach(g => {
+                    buteurs[g.scorer] = (buteurs[g.scorer] || 0) + 1;
+                    if(g.assist) passeurs[g.assist] = (passeurs[g.assist] || 0) + 1;
+                });
+                s.cards.forEach(c => {
+                    if(!cartons[c.player]) cartons[c.player] = {j:0, r:0};
+                    if(c.type === 'jaune') cartons[c.player].j++; else cartons[c.player].r++;
+                });
+                if(s.boulet) boulets[s.boulet] = (boulets[s.boulet] || 0) + 1;
+            });
+
+            const drawTable = (id, dataObj, formatFn) => {
+                const tbody = document.querySelector(`#${id} tbody`); tbody.innerHTML = '';
+                const sorted = Object.entries(dataObj).sort((a,b) => b[1] - a[1] || b[1].r - a[1].r); // naive sort works for most
+                if(sorted.length===0) tbody.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucune donnée</td></tr>`;
+                sorted.forEach(([email, val]) => { tbody.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${formatFn(val)}</td></tr>`; });
+            };
+
+            drawTable('table-buteurs', buteurs, v => `<strong>${v}</strong> but(s)`);
+            drawTable('table-passeurs', passeurs, v => `<strong>${v}</strong> passe(s)`);
+            drawTable('table-boulets', boulets, v => `<strong>${v}</strong> fois`);
+            
+            const tbodyC = document.querySelector(`#table-cartons tbody`); tbodyC.innerHTML = '';
+            const sortedC = Object.entries(cartons).sort((a,b) => (b[1].r*3 + b[1].j) - (a[1].r*3 + a[1].j));
+            if(sortedC.length===0) tbodyC.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucun carton</td></tr>`;
+            sortedC.forEach(([email, val]) => { tbodyC.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${val.j} 🟨 / ${val.r} 🟥</td></tr>`; });
+        }
+
         function renderRoster() {
-            const tbody = document.querySelector('#roster-table-el tbody');
-            tbody.innerHTML = '';
+            const tbody = document.querySelector('#roster-table-el tbody'); tbody.innerHTML = '';
             joueursData.forEach(j => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${j.prenom} ${j.nom}</strong><br><span style="font-size:11px; color:var(--ink-soft);">${j.email}</span></td>
-                    <td>${j.affiliation}</td>
-                    <td>${j.telephone}</td>
-                    <td><span class="badge ${j.isAdmin ? 'badge-admin' : 'badge-player'}">${j.role}</span></td>
-                `;
-                tbody.appendChild(tr);
+                tbody.innerHTML += `<tr><td><strong>${j.prenom} ${j.nom}</strong><br><span style="font-size:11px; color:var(--ink-soft);">${j.email}</span></td><td>${j.affiliation}</td><td>${j.telephone}</td><td><span class="badge ${j.isAdmin ? 'badge-admin' : 'badge-player'}">${j.role}</span></td></tr>`;
             });
         }
     </script>
