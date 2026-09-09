@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Fast Foot — Calendrier & Présences</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch:#0F2E24;
+    --pitch-2:#173F31;
+    --grass:#6FB92C;
+    --grass-2:#8FD13F;
+    --red:#E13B2E;
+    --red-2:#C22E22;
+    --cheese:#FFC94A;
+    --bun:#F6E9D0;
+    --paper:#FFFCF6;
+    --ink:#16201B;
+    --ink-soft:#5B6660;
+    --line:#E4D9BF;
+    --present:#3E9A3B;
+    --uncertain:#D89A1F;
+    --absent:#C33A2C;
+    --admin:#7A4FE0;
+    --shadow: 0 6px 20px rgba(15,46,36,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bun);
+    background-image:radial-gradient(circle at 1px 1px, rgba(15,46,36,0.06) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+    padding-bottom:48px;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px;}
+
+  header.top{
+    background:linear-gradient(180deg,var(--pitch) 0%, var(--pitch-2) 100%);
+    border-bottom:4px solid var(--red);
+    padding:22px 0 18px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 46px);
+    pointer-events:none;
+  }
+  .top-inner{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
+  .top-left{display:flex;align-items:center;gap:14px;}
+  .top-inner img{width:56px;height:56px;border-radius:14px;box-shadow:var(--shadow);flex-shrink:0;object-fit:cover;}
+  .top-title{color:var(--paper);}
+  .top-title h1{font-family:'Anton',sans-serif;font-size:30px;letter-spacing:1px;margin:0;line-height:0.9;text-transform:uppercase;}
+  .top-title p{margin:5px 0 0;color:var(--grass-2);font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:0.5px;text-transform:uppercase;}
+
+  .notif-badge-btn{background:var(--paper);border:2px solid var(--ink);border-radius:10px;padding:8px 12px;font-family:'Space Mono',monospace;font-size:12px;cursor:pointer;position:relative;display:flex;align-items:center;gap:6px;}
+  .notif-count{background:var(--red);color:#fff;border-radius:50%;padding:2px 6px;font-size:10px;font-weight:700;}
+
+  /* Auth Screen */
+  #auth-screen{position:fixed;inset:0;background:rgba(15,46,36,0.85);backdrop-filter:blur(4px);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .auth-card{background:var(--paper);border:3px solid var(--ink);border-radius:16px;padding:24px;width:100%;max-width:400px;box-shadow:var(--shadow);}
+  .auth-card h2{font-family:'Anton',sans-serif;font-size:24px;margin-top:0;text-transform:uppercase;color:var(--pitch);}
+
+  .identity-bar{
+    background:var(--paper);
+    border:2px solid var(--ink);
+    border-radius:12px;
+    margin:16px 0;
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:var(--shadow);
+    justify-content:space-between;
+  }
+  .user-quick-profile{display:flex;align-items:center;gap:10px;}
+  .user-quick-profile img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);}
+  .role-pill{
+    font-family:'Space Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    padding:4px 9px;
+    border-radius:20px;
+    color:#fff;
+    white-space:nowrap;
+  }
+  .role-pill.administrateur{background:var(--admin);}
+  .role-pill.joueur{background:var(--grass);color:#0F2E24;}
+  .role-pill.staff{background:var(--cheese);color:#5B4300;}
+  .role-pill-wrap{display:flex;gap:5px;flex-wrap:wrap;}
+
+  .tabs{display:flex;gap:8px;margin:14px 0 18px;flex-wrap:wrap;}
+  .tab-btn{
+    flex:1;min-width:100px;
+    padding:11px 8px;
+    border:2px solid var(--ink);
+    background:var(--paper);
+    border-radius:10px;
+    font-family:'Anton',sans-serif;
+    letter-spacing:0.6px;
+    font-size:13px;
+    text-transform:uppercase;
+    color:var(--ink);
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .tab-btn.active{background:var(--red);border-color:var(--red-2);color:#fff;box-shadow:var(--shadow);transform:translateY(-1px);}
+  .tab-btn:not(.active):hover{background:#fff8ea;}
+  .tab-btn[hidden]{display:none;}
+
+  section.view{display:none;}
+  section.view.active{display:block;}
+
+  .subtabs{display:flex;gap:6px;margin-bottom:16px;}
+  .subtab-btn{
+    padding:7px 14px;
+    border:2px solid var(--ink);
+    background:var(--paper);
+    border-radius:20px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .subtab-btn.active{background:var(--pitch);color:#fff;border-color:var(--pitch);}
+  .subview{display:none;}
+  .subview.active{display:block;}
+
+  .season-label{
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    letter-spacing:1px;
+    margin:0 2px 10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .season-label span.count{background:var(--pitch);color:var(--grass-2);padding:3px 8px;border-radius:20px;font-size:10.5px;}
+
+  .banner{
+    background:#F1E9FF;
+    border:2px dashed var(--admin);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:13px;
+    color:#4A2E8F;
+    margin-bottom:14px;
+  }
+  .banner b{display:block;margin-bottom:2px;}
+
+  .ticket{
+    background:var(--paper);
+    border:2px solid var(--ink);
+    border-radius:14px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    position:relative;
+  }
+  .ticket.past{opacity:0.65;}
+  .ticket-main{padding:14px 16px 12px;position:relative;}
+  .ticket-row1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .date-block{font-family:'Anton',sans-serif;line-height:0.95;}
+  .date-block .day{font-size:26px;text-transform:uppercase;color:var(--ink);}
+  .date-block .rest{font-size:12px;color:var(--ink-soft);font-family:'Space Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;margin-top:3px;}
+  .stamp{font-family:'Anton',sans-serif;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 10px;border-radius:7px;border:2px solid currentColor;transform:rotate(3deg);white-space:nowrap;}
+  .stamp.dom{color:var(--present);}
+  .stamp.ext{color:var(--red-2);}
+  .code-chip{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--ink-soft);letter-spacing:0.5px;}
+  .matchup{margin-top:12px;display:flex;align-items:center;gap:10px;font-family:'Anton',sans-serif;font-size:19px;text-transform:uppercase;letter-spacing:0.3px;}
+  .matchup .us{color:var(--red-2);}
+  .matchup .vs{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);font-weight:700;}
+  .matchup .them{color:var(--ink);}
+
+  .perf-divider{position:relative;height:0;border-top:2px dashed var(--line);margin:0 16px;}
+  .perf-divider::before,.perf-divider::after{content:"";position:absolute;top:-11px;width:22px;height:22px;background:var(--bun);border-radius:50%;border:2px solid var(--ink);}
+  .perf-divider::before{left:-33px;}
+  .perf-divider::after{right:-33px;}
+
+  .ticket-info{padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px;}
+  .venue-line{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;}
+  .venue-line svg{flex-shrink:0;margin-top:2px;}
+  .venue-name{font-weight:700;}
+  .venue-addr{color:var(--ink-soft);font-size:12.5px;display:block;margin-top:1px;}
+
+  .map-btns{display:flex;gap:8px;}
+  .map-btn{flex:1;text-align:center;padding:8px 6px;border-radius:8px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:0.4px;text-decoration:none;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:5px;border:2px solid var(--ink);}
+  .map-btn.waze{background:#CFF2FF;color:#0B4A63;}
+  .map-btn.gmaps{background:#DCF3DC;color:#1E5C2A;}
+
+  .presence-block{border-top:1px solid var(--line);padding-top:10px;margin-top:2px;}
+  .presence-title{font-family:'Space Mono',monospace;font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);letter-spacing:0.5px;margin-bottom:7px;}
+  .presence-choices{display:flex;gap:6px;margin-bottom:10px;}
+  .pchoice{flex:1;padding:8px 4px;border-radius:8px;border:2px solid var(--ink);background:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:12px;cursor:pointer;color:var(--ink-soft);}
+  .pchoice[data-status="present"].sel{background:var(--present);border-color:var(--present);color:#fff;}
+  .pchoice[data-status="uncertain"].sel{background:var(--uncertain);border-color:var(--uncertain);color:#fff;}
+  .pchoice[data-status="absent"].sel{background:var(--absent);border-color:var(--absent);color:#fff;}
+
+  .presence-summary{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;cursor:pointer;}
+  .psum{display:flex;align-items:center;gap:5px;}
+  .psum .dot{width:9px;height:9px;border-radius:50%;}
+  .psum.present .dot{background:var(--present);}
+  .psum.uncertain .dot{background:var(--uncertain);}
+  .psum.absent .dot{background:var(--absent);}
+  .psum-names{font-size:11.5px;color:var(--ink-soft);margin-top:6px;line-height:1.5;display:none;}
+  .psum-names.open{display:block;}
+
+  /* Boulet du match card */
+  .boulet-section{background:#FFF3D6;border:2px solid var(--cheese);border-radius:10px;padding:12px;margin-top:10px;}
+  .boulet-title{font-family:'Anton',sans-serif;font-size:14px;color:#7A5B10;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+  .boulet-select{width:100%;padding:8px;border-radius:6px;border:2px solid var(--cheese);background:#fff;font-weight:600;margin-bottom:8px;}
+
+  .card{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:14px;margin-bottom:18px;box-shadow:var(--shadow);}
+  .card h3{font-family:'Anton',sans-serif;font-size:16px;text-transform:uppercase;margin:0 0 10px;letter-spacing:0.5px;}
+  .card form{display:flex;gap:8px;flex-wrap:wrap;}
+  .card .field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;}
+  .card .field.small{flex:0 0 90px;min-width:90px;}
+  .card .field label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--ink-soft);letter-spacing:0.4px;}
+  .card input, .card select{
+    padding:10px 12px;border:2px solid var(--line);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;width:100%;background:#fff;
+  }
+  .card input:focus, .card select:focus{outline:none;border-color:var(--grass);}
+  .role-checks{display:flex;gap:10px;flex-wrap:wrap;padding:10px 0 4px;}
+  .role-checks .rc{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;cursor:pointer;}
+  .role-checks .rc input{width:auto;}
+  .card .fullwidth{flex-basis:100%;}
+  .submit-btn{
+    padding:10px 16px;border:none;background:var(--grass);color:#0F2E24;font-family:'Anton',sans-serif;letter-spacing:0.5px;text-transform:uppercase;font-size:13px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;height:42px;align-self:flex-end;
+  }
+  .submit-btn:hover{background:var(--grass-2);}
+  .cancel-btn{
+    padding:10px 16px;border:2px solid var(--ink-soft);background:#fff;color:var(--ink-soft);font-family:'Inter',sans-serif;font-weight:700;font-size:13px;border-radius:8px;cursor:pointer;height:42px;align-self:flex-end;
+  }
+
+  .list-item{background:var(--paper);border:2px solid var(--ink);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .list-item .name{font-weight:700;font-size:14.5px;}
+  .item-actions{display:flex;align-items:center;gap:8px;}
+  .icon-btn{border:2px solid var(--ink);background:#fff;color:var(--ink);width:32px;height:32px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .icon-btn.danger{border-color:var(--red-2);color:var(--red-2);}
+  .icon-btn.danger:hover{background:var(--red);color:#fff;}
+  .icon-btn.edit:hover{background:var(--pitch);color:#fff;}
+
+  .match-row{background:var(--paper);border:2px solid var(--ink);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+  .match-row .mtop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .match-row .mtitle{font-weight:700;font-size:14px;}
+  .match-row .msub{font-size:11.5px;color:var(--ink-soft);font-family:'Space Mono',monospace;margin-top:2px;}
+
+  .empty-state{text-align:center;padding:30px 10px;color:var(--ink-soft);font-size:13.5px;}
+  footer.credit{text-align:center;font-family:'Space Mono',monospace;font-size:10.5px;color:var(--ink-soft);letter-spacing:0.5px;margin-top:26px;opacity:0.7;}
+
+  /* Modal Notifications & Profil */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;}
+  .modal-content{background:var(--paper);border:2px solid var(--ink);border-radius:14px;max-width:450px;width:100%;padding:20px;box-shadow:var(--shadow);}
+  .notif-item{padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- ÉCRAN D'AUTHENTIFICATION -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <h2>Espace Membre Fast Foot</h2>
+    <p style="font-size:13px;color:var(--ink-soft);">Connectez-vous avec votre adresse mail personnelle pour accéder à votre espace privé.</p>
+    <div id="auth-form-container">
+      <form id="auth-form" style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
+        <div class="field"><label>Adresse Mail Personnelle</label><input type="email" id="auth-email" required placeholder="votre.mail@gmail.com"></div>
+        <div class="field"><label>Mot de passe</label><input type="password" id="auth-password" required placeholder="••••••••"></div>
+        <button type="submit" class="submit-btn" style="width:100%;justify-content:center;margin-top:6px;">Se connecter</button>
+      </form>
+      <p style="text-align:center;font-size:12px;margin-top:12px;"><a href="#" id="toggle-signup" style="color:var(--pitch);font-weight:700;">Pas encore de compte ? S'inscrire</a></p>
+    </div>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="top-left">
+      <img id="header-avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAFACAYAAADNkKWqAAEAAElEQVR42uy9d4AkV3Xv/7m3qjpMzpmzrnalVc4ooAgCronZsgqAEMx7/e/tX47p6S6a65xL91W+841O3L3sAABN6Wf3L7bH0L8nQ+Z590sC7vP8HjS2w2P4Q1u5sD+W25h3gK9Z0Lz0dM63/vY60F6k7X3J/N5D/0a+5NcfQ3WJ/s8kO2n+eW2bPPfP0c+w30w/D3oP7W61NbfO707fXv8430z+zK/9L/M8GgAAAABJRU5ErkJggg==" alt="Logo">
+      <div class="top-title">
+        <h1>Fast Foot</h1>
+        <p>Calendrier &amp; présences — saison 2026/27</p>
+      </div>
+    </div>
+    <div>
+      <button class="notif-badge-btn" id="open-notifs-btn">
+        🔔 Notifs <span class="notif-count" id="notif-badge-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="identity-bar">
+    <div class="user-quick-profile">
+      <img id="current-user-avatar" src="" alt="Avatar">
+      <div>
+        <div style="font-weight:700;font-size:14px;" id="current-user-name">—</div>
+        <div style="font-size:11px;color:var(--ink-soft);" id="current-user-email">—</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <div class="role-pill-wrap" id="role-pill-wrap"></div>
+      <button class="icon-btn edit" id="open-profile-btn" title="Modifier mon profil & photo">⚙️</button>
+      <button class="icon-btn danger" id="logout-btn" title="Se déconnecter">🚪</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="calendar">Calendrier</button>
+    <button class="tab-btn" data-tab="boulet" id="tab-boulet">Boulet du Match</button>
+    <button class="tab-btn" data-tab="admin" id="tab-admin" hidden>Administration</button>
+  </div>
+
+  <section id="view-calendar" class="view active">
+    <div class="season-label"><span id="match-total">— matchs · Fast Foot</span><span class="count" id="upcoming-count">— à venir</span></div>
+    <div id="ticket-list"></div>
+  </section>
+
+  <!-- ONGLET BOULET DU MATCH -->
+  <section id="view-boulet" class="view">
+    <h3>Votes pour le Boulet du Match</h3>
+    <p style="font-size:13px;color:var(--ink-soft);">Les votes ouvrent pendant le match et se ferment automatiquement **2 heures après le coup de sifflet final**. Réservé aux participants du match.</p>
+    <div id="boulet-match-list"></div>
+  </section>
+
+  <section id="view-admin" class="view">
+    <div class="subtabs">
+      <button class="subtab-btn active" data-sub="effectif">Effectif</button>
+      <button class="subtab-btn" data-sub="matchs">Matchs</button>
+    </div>
+
+    <div id="sub-effectif" class="subview active">
+      <div id="no-admin-banner" class="banner" style="display:none;">
+        <b>Aucun administrateur défini</b>
+        Attribuez le rôle « Administrateur » à un membre ci-dessous pour sécuriser la gestion.
+      </div>
+      <div class="season-label"><span>Effectif</span><span class="count" id="roster-count">0 membres</span></div>
+      <div id="roster-list"></div>
+    </div>
+
+    <div id="sub-matchs" class="subview">
+      <div class="card">
+        <h3 id="match-form-title">Ajouter un match</h3>
+        <form id="add-match-form">
+          <div class="field small"><label>Code</label><input type="text" id="m-code" placeholder="BA1014" required></div>
+          <div class="field small"><label>Date</label><input type="date" id="m-date" required></div>
+          <div class="field small"><label>Heure</label><input type="text" id="m-heure" placeholder="20h00" required></div>
+          <div class="field"><label>Salle</label><input type="text" id="m-salle" list="salle-list" placeholder="Grez-Doiceau" required></div>
+          <datalist id="salle-list"></datalist>
+          <div class="field fullwidth"><label>Adresse de la salle</label><input type="text" id="m-adresse" placeholder="Chau. de Wavre 99, 1390 Grez-Doiceau" required></div>
+          <div class="field small"><label>Lieu</label>
+            <select id="m-home"><option value="home">Domicile</option><option value="away">Extérieur</option></select>
+          </div>
+          <div class="field"><label>Adversaire</label><input type="text" id="m-adversaire" placeholder="Foxtrot" required></div>
+          <button type="submit" class="submit-btn" id="match-submit-btn">Ajouter</button>
+          <button type="button" class="cancel-btn" id="match-cancel-btn" style="display:none;">Annuler</button>
+        </form>
+      </div>
+      <div class="season-label"><span>Calendrier</span><span class="count" id="matches-count">0 matchs</span></div>
+      <div id="matches-list"></div>
+    </div>
+  </section>
+</div>
+
+<!-- MODAL NOTIFICATIONS -->
+<div class="modal-overlay" id="notif-modal">
+  <div class="modal-content">
+    <h3>Centre de Notifications</h3>
+    <div id="notif-list" style="max-height:250px;overflow-y:auto;margin:10px 0;"></div>
+    <button class="submit-btn" style="width:100%;justify-content:center;" onclick="document.getElementById('notif-modal').style.display='none'">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL PROFIL -->
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal-content">
+    <h3>Mon Espace & Photo de Profil</h3>
+    <form id="profile-form" style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
+      <div class="field"><label>Prénom</label><input type="text" id="p-prenom" required></div>
+      <div class="field"><label>Nom</label><input type="text" id="p-nom" required></div>
+      <div class="field"><label>Adresse mail personnelle</label><input type="email" id="p-email" required></div>
+      <div class="field"><label>Photo de profil (URL ou Image)</label><input type="url" id="p-avatar" placeholder="https://exemple.com/photo.jpg"></div>
+      <div class="field"><label>Nouveau mot de passe (optionnel)</label><input type="password" id="p-password" placeholder="Laisser vide pour ne pas changer"></div>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button type="submit" class="submit-btn" style="flex:1;justify-content:center;">Enregistrer</button>
+        <button type="button" class="cancel-btn" style="flex:1;" onclick="document.getElementById('profile-modal').style.display='none'">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="credit">FAST FOOT · CALENDRIER PARTAGÉ DE L’ÉQUIPE</footer>
+
+<script>
+(function(){
+  const DEFAULT_MATCHES = [
+    {code:'BA1014', date:'2026-09-13', salle:'Grez-Doiceau', heure:'20h00', dom:'Fast Foot', ext:'Foxtrot'},
+    {code:'BA1024', date:'2026-09-20', salle:'Grez-Doiceau', heure:'20h00', dom:'Fast Foot', ext:'RWD Limal'},
+    {code:'BA1033', date:'2026-09-27', salle:'Grez-Doiceau', heure:'20h00', dom:'Fast Foot', ext:'Peru Boys'},
+    {code:'BAC013', date:'2026-10-11', salle:'Grez-Doiceau', heure:'21h00', dom:'Fast Foot', ext:'All Blacks'},
+    {code:'BAC017', date:'2026-10-18', salle:'Wavre', heure:'18h00', dom:'US Comete', ext:'Fast Foot'}
+  ];
+
+  const DEFAULT_ADDRESSES = {
+    'Wavre': 'Av. du Centre Sportif 22, 1300 Wavre',
+    'Limal': 'Rue Charles Jaumotte 156, 1300 Wavre',
+    'Grez-Doiceau': 'Chau. de Wavre 99, 1390 Grez-Doiceau',
+    'Ottignies': 'Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve'
+  };
+
+  const DEFAULT_PLAYERS = [
+    {id:'p-ancart-pierre', nom:'Ancart', prenom:'Pierre', email:'pierre.ancart@gmail.com', password:'123', avatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', roles:['administrateur','staff','joueur']},
+    {id:'p-spletinckx-alexandre', nom:'Spletinckx', prenom:'Alexandre', email:'alex.spletinckx@gmail.com', password:'123', avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', roles:['administrateur','joueur']}
+  ];
+
+  const MOIS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  const JOURS = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+  const ROLE_LABEL = {administrateur:'Admin', joueur:'Joueur', staff:'Staff'};
+
+  let players = [];
+  let matches = [];
+  let addresses = {};
+  let presences = {};
+  let bouletVotes = {};
+  let notifications = [];
+  let currentUserId = localStorage.getItem('ff_logged_user') || '';
+  let openSummary = {};
+  let editingMatchCode = null;
+  let isSignupMode = false;
+
+  const $ = (sel, el) => (el||document).querySelector(sel);
+  const $$ = (sel, el) => Array.from((el||document).querySelectorAll(sel));
+
+  function fmtDate(iso){
+    const d = new Date(iso + 'T12:00:00');
+    return {day:d.getDate(), dow:JOURS[d.getDay()], mois:MOIS[d.getMonth()], annee:d.getFullYear()};
+  }
+  function isPast(iso){
+    const today = new Date(); today.setHours(0,0,0,0);
+    return new Date(iso+'T12:00:00') < today;
+  }
+  function currentPlayer(){ return players.find(p=>p.id===currentUserId) || null; }
+  function isAdmin(p){ return !!(p && Array.isArray(p.roles) && p.roles.includes('administrateur')); }
+  function adminExists(){ return players.some(p=>Array.isArray(p.roles) && p.roles.includes('administrateur')); }
+  function playerLabel(pl){ return pl.prenom + ' ' + pl.nom; }
+  function slugify(s){
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  }
+
+  async function loadData(){
+    try{
+      const p = await window.storage.get('ff_players', true);
+      players = p ? JSON.parse(p.value) : DEFAULT_PLAYERS.slice();
+      if(!p){ await window.storage.set('ff_players', JSON.stringify(players), true); }
+    }catch(e){ players = DEFAULT_PLAYERS.slice(); }
+
+    try{
+      const m = await window.storage.get('ff_matches', true);
+      matches = m ? JSON.parse(m.value) : DEFAULT_MATCHES.slice();
+      if(!m){ await window.storage.set('ff_matches', JSON.stringify(matches), true); }
+    }catch(e){ matches = DEFAULT_MATCHES.slice(); }
+
+    try{
+      const a = await window.storage.get('ff_addresses', true);
+      addresses = a ? JSON.parse(a.value) : Object.assign({}, DEFAULT_ADDRESSES);
+    }catch(e){ addresses = Object.assign({}, DEFAULT_ADDRESSES); }
+
+    try{
+      const pr = await window.storage.get('ff_presences', true);
+      presences = pr ? JSON.parse(pr.value) : {};
+    }catch(e){ presences = {}; }
+
+    try{
+      const bv = await window.storage.get('ff_boulet', true);
+      bouletVotes = bv ? JSON.parse(bv.value) : {};
+    }catch(e){ bouletVotes = {}; }
+
+    generateNotifications();
+  }
+
+  async function saveData(){
+    try{
+      await window.storage.set('ff_players', JSON.stringify(players), true);
+      await window.storage.set('ff_matches', JSON.stringify(matches), true);
+      await window.storage.set('ff_presences', JSON.stringify(presences), true);
+      await window.storage.set('ff_boulet', JSON.stringify(bouletVotes), true);
+    }catch(e){}
+  }
+
+  /* Génération automatique des notifications */
+  function generateNotifications(){
+    notifications = [];
+    const cp = currentPlayer();
+    if(!cp) return;
+    const now = new Date();
+
+    matches.forEach(m => {
+      const matchDate = new Date(m.date + 'T22:00:00');
+      const diffDays = (matchDate - now) / (1000 * 60 * 60 * 24);
+      const matchPres = presences[m.code] || {};
+
+      if(diffDays > 0 && diffDays <= 3 && !matchPres[cp.id]){
+        notifications.push({text: `Rappel : Mentionnez votre présence pour le match contre ${m.ext} (${m.date}) !`});
+      }
+
+      const hoursSinceMatch = (now - matchDate) / (1000 * 60 * 60);
+      if(hoursSinceMatch >= 0 && hoursSinceMatch <= 2 && matchPres[cp.id] === 'present'){
+        const votesForMatch = bouletVotes[m.code] || {};
+        if(!votesForMatch[cp.id]){
+          notifications.push({text: `Le match contre ${m.ext} est terminé ! N'oubliez pas de voter pour le Boulet du match.`});
+        }
+      }
+    });
+
+    $('#notif-badge-count').textContent = notifications.length;
+    $('#notif-list').innerHTML = notifications.length ? notifications.map(n=>`<div class="notif-item">🔔 ${n.text}</div>`).join('') : '<div style="text-align:center;color:var(--ink-soft);">Aucune nouvelle notification</div>';
+  }
+
+  /* Gestion Auth */
+  function initAuth(){
+    const cp = currentPlayer();
+    if(cp){
+      $('#auth-screen').style.display = 'none';
+      $('#current-user-name').textContent = playerLabel(cp);
+      $('#current-user-email').textContent = cp.email;
+      $('#current-user-avatar').src = cp.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150';
+      $('#header-avatar').src = cp.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150';
+      
+      const wrap = $('#role-pill-wrap');
+      wrap.innerHTML = cp.roles.map(r=>`<span class="role-pill ${r}">${ROLE_LABEL[r]||r}</span>`).join('');
+      $('#tab-admin').hidden = !isAdmin(cp) && adminExists();
+      
+      generateNotifications();
+      renderTickets();
+      renderBouletSection();
+      renderRoster();
+      renderMatchesAdmin();
+    } else {
+      $('#auth-screen').style.display = 'flex';
+    }
+  }
+
+  $('#toggle-signup').addEventListener('click', (e)=>{
+    e.preventDefault();
+    isSignupMode = !isSignupMode;
+    const card = $('.auth-card');
+    if(isSignupMode){
+      card.querySelector('h2').textContent = 'Inscription Fast Foot';
+      $('#toggle-signup').textContent = 'Déjà un compte ? Se connecter';
+      if(!$('#auth-prenom')){
+        $('#auth-form').insertAdjacentHTML('afterbegin', '<div class="field"><label>Prénom</label><input type="text" id="auth-prenom" required></div><div class="field"><label>Nom</label><input type="text" id="auth-nom" required></div>');
+      }
+    } else {
+      card.querySelector('h2').textContent = 'Espace Membre Fast Foot';
+      $('#toggle-signup').textContent = "Pas encore de compte ? S'inscrire";
+      if($('#auth-prenom')) $('#auth-prenom').closest('.field').remove();
+      if($('#auth-nom')) $('#auth-nom').closest('.field').remove();
+    }
+  });
+
+  $('#auth-form').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = $('#auth-email').value.trim().toLowerCase();
+    const password = $('#auth-password').value;
+
+    if(isSignupMode){
+      const prenom = $('#auth-prenom').value.trim();
+      const nom = $('#auth-nom').value.trim();
+      if(players.some(p => p.email === email)){
+        alert('Cet e-mail personnel est déjà utilisé.');
+        return;
+      }
+      const id = 'p-' + slugify(nom+'-'+prenom) + '-' + Date.now().toString(36).slice(-4);
+      const newP = {id, nom, prenom, email, password, avatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', roles:['joueur']};
+      players.push(newP);
+      currentUserId = id;
+      localStorage.setItem('ff_logged_user', id);
+    } else {
+      const user = players.find(p => p.email === email && p.password === password);
+      if(!user){
+        alert('E-mail personnel ou mot de passe incorrect.');
+        return;
+      }
+      currentUserId = user.id;
+      localStorage.setItem('ff_logged_user', user.id);
+    }
+    await saveData();
+    initAuth();
+  });
+
+  $('#logout-btn').addEventListener('click', ()=>{
+    localStorage.removeItem('ff_logged_user');
+    currentUserId = '';
+    initAuth();
+  });
+
+  /* Rendu Calendrier & Présences */
+  function renderTickets(){
+    const list = $('#ticket-list');
+    const sorted = matches.slice().sort((a,b)=> a.date.localeCompare(b.date));
+    $('#match-total').textContent = sorted.length + ' matchs · Fast Foot';
+    $('#upcoming-count').textContent = sorted.filter(m=>!isPast(m.date)).length + ' à venir';
+
+    if(sorted.length===0){
+      list.innerHTML = '<div class="empty-state">Aucun match programmé.</div>';
+      return;
+    }
+
+    list.innerHTML = sorted.map(m=>{
+      const home = m.dom === 'Fast Foot';
+      const adversaire = home ? m.ext : m.dom;
+      const addr = addresses[m.salle] || '';
+      const d = fmtDate(m.date);
+      const past = isPast(m.date);
+      const matchPres = presences[m.code] || {};
+
+      const counts = {present:0, uncertain:0, absent:0};
+      const names = {present:[], uncertain:[], absent:[]};
+      players.forEach(p=>{
+        const st = matchPres[p.id];
+        if(st && counts.hasOwnProperty(st)){ counts[st]++; names[st].push(playerLabel(p)); }
+      });
+
+      const cp = currentPlayer();
+      const myStatus = cp ? (matchPres[cp.id] || '') : '';
+      const summaryOpen = openSummary[m.code];
+
+      return `
+      <div class="ticket ${past?'past':''}" data-code="${m.code}">
+        <div class="ticket-main">
+          <div class="ticket-row1">
+            <div class="date-block">
+              <div class="day">${d.day} ${d.mois}</div>
+              <div class="rest">${d.dow} · ${m.heure}</div>
+            </div>
+            <div class="stamp ${home?'dom':'ext'}">${home?'Domicile':'Extérieur'}</div>
+          </div>
+          <div class="matchup">
+            <span class="${home?'us':'them'}">${home?'Fast Foot':adversaire}</span>
+            <span class="vs">vs</span>
+            <span class="${home?'them':'us'}">${home?adversaire:'Fast Foot'}</span>
+          </div>
+          <div class="code-chip" style="margin-top:6px;">Match n° ${m.code}</div>
+        </div>
+        <div class="perf-divider"></div>
+        <div class="ticket-info">
+          <div class="venue-line">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5B6660" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div><span class="venue-name">Salle de ${m.salle}</span><span class="venue-addr">${addr}</span></div>
+          </div>
+          <div class="map-btns">
+            <a class="map-btn waze" href="https://waze.com/ul?q=${encodeURIComponent(addr)}&navigate=yes" target="_blank">Waze</a>
+            <a class="map-btn gmaps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}" target="_blank">Google Maps</a>
+          </div>
+          <div class="presence-block">
+            <div class="presence-title">Ma présence</div>
+            <div class="presence-choices">
+              <button class="pchoice ${myStatus==='present'?'sel':''}" data-status="present" data-code="${m.code}">Présent</button>
+              <button class="pchoice ${myStatus==='uncertain'?'sel':''}" data-status="uncertain" data-code="${m.code}">Incertain</button>
+              <button class="pchoice ${myStatus==='absent'?'sel':''}" data-status="absent" data-code="${m.code}">Absent</button>
+            </div>
+            <div class="presence-summary" data-toggle="${m.code}">
+              <div class="psum present"><span class="dot"></span>${counts.present} présent(s)</div>
+              <div class="psum uncertain"><span class="dot"></span>${counts.uncertain} incertain(s)</div>
+              <div class="psum absent"><span class="dot"></span>${counts.absent} absent(s)</div>
+            </div>
+            <div class="psum-names ${summaryOpen?'open':''}">
+              ${counts.present ? '✅ '+names.present.join(', ')+'<br>' : ''}
+              ${counts.uncertain ? '⏳ '+names.uncertain.join(', ')+'<br>' : ''}
+              ${counts.absent ? '❌ '+names.absent.join(', ') : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    $$('.pchoice').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const cp = currentPlayer();
+        if(!cp) return;
+        const code = btn.dataset.code;
+        const status = btn.dataset.status;
+        if(!presences[code]) presences[code] = {};
+        if(presences[code][cp.id] === status){ delete presences[code][cp.id]; }
+        else { presences[code][cp.id] = status; }
+        renderTickets();
+        await saveData();
+      });
+    });
+    $$('.presence-summary').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const code = el.dataset.toggle;
+        openSummary[code] = !openSummary[code];
+        renderTickets();
+      });
+    });
+  }
+
+  /* Onglet Boulet du match */
+  function renderBouletSection(){
+    const container = $('#boulet-match-list');
+    const cp = currentPlayer();
+    const now = new Date();
+
+    container.innerHTML = matches.map(m => {
+      const matchDate = new Date(m.date + 'T22:00:00');
+      const hoursSinceMatch = (now - matchDate) / (1000 * 60 * 60);
+      const isOpen = hoursSinceMatch >= 0 && hoursSinceMatch <= 2;
+      const matchPres = presences[m.code] || {};
+      const isEligible = matchPres[cp?.id] === 'present' || cp?.roles.includes('staff');
+      const votes = bouletVotes[m.code] || {};
+      const myVote = cp ? votes[cp.id] : '';
+
+      const tally = {};
+      Object.values(votes).forEach(v => tally[v] = (tally[v]||0)+1);
+      const sortedTally = Object.entries(tally).sort((a,b)=>b[1]-a[1]);
+
+      let html = `<div class="card">
+        <h3>Match vs ${m.ext} (${m.date})</h3>`;
+
+      if(!isOpen && hoursSinceMatch < 0){
+        html += `<p style="font-size:12px;color:var(--ink-soft);">⏳ Le vote n'est pas encore ouvert (ouvre après le match).</p>`;
+      } else if(!isOpen && hoursSinceMatch > 2){
+        html += `<p style="font-size:12px;color:var(--red);">🔒 Le vote est fermé (clos 2h après le match).</p>`;
+        if(sortedTally.length > 0){
+          const winner = players.find(p=>p.id===sortedTally[0][0]);
+          html += `<p style="font-weight:700;color:var(--red);">🏆 Boulet du match : ${winner?playerLabel(winner):'Inconnu'} (${sortedTally[0][1]} votes)</p>`;
+        }
+      } else {
+        if(!isEligible){
+          html += `<p style="font-size:12px;color:var(--red);">⚠️ Réservé aux joueurs et au staff présents à cette rencontre.</p>`;
+        } else {
+          html += `<div class="boulet-section">
+            <div class="boulet-title"><span>Votez pour le Boulet</span></div>
+            <select class="boulet-select" data-match="${m.code}">
+              <option value="">— Choisir le boulet —</option>
+              ${players.map(p=>`<option value="${p.id}" ${myVote===p.id?'selected':''}>${playerLabel(p)}</option>`).join('')}
+            </select>
+          </div>`;
+        }
+      }
+      html += `</div>`;
+      return html;
+    }).join('');
+
+    $$('.boulet-select').forEach(sel => {
+      sel.addEventListener('change', async (e)=>{
+        const code = e.target.dataset.match;
+        const targetId = e.target.value;
+        const cp = currentPlayer();
+        if(!bouletVotes[code]) bouletVotes[code] = {};
+        if(targetId) bouletVotes[code][cp.id] = targetId;
+        else delete bouletVotes[code][cp.id];
+        await saveData();
+        alert('Votre vote a bien été pris en compte !');
+      });
+    });
+  }
+
+  /* Gestion Profil Modal */
+  $('#open-profile-btn').addEventListener('click', ()=>{
+    const cp = currentPlayer();
+    if(!cp) return;
+    $('#p-prenom').value = cp.prenom;
+    $('#p-nom').value = cp.nom;
+    $('#p-email').value = cp.email;
+    $('#p-avatar').value = cp.avatar || '';
+    $('#profile-modal').style.display = 'flex';
+  });
+
+  $('#profile-form').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const cp = currentPlayer();
+    if(!cp) return;
+    cp.prenom = $('#p-prenom').value.trim();
+    cp.nom = $('#p-nom').value.trim();
+    cp.email = $('#p-email').value.trim().toLowerCase();
+    cp.avatar = $('#p-avatar').value.trim();
+    const newPwd = $('#p-password').value;
+    if(newPwd) cp.password = newPwd;
+
+    $('#profile-modal').style.display = 'none';
+    await saveData();
+    initAuth();
+  });
+
+  $('#open-notifs-btn').addEventListener('click', ()=>{
+    $('#notif-modal').style.display = 'flex';
+  });
+
+  /* Roster & Admin */
+  function renderRoster(){
+    const list = $('#roster-list');
+    $('#roster-count').textContent = players.length + ' membres';
+    list.innerHTML = players.map(p => `
+      <div class="list-item">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="${p.avatar||'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+          <div><div class="name">${playerLabel(p)}</div><div style="font-size:11px;color:var(--ink-soft);">${p.email}</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="role-checks">
+            ${['joueur','staff','administrateur'].map(r => `<label class="rc"><input type="checkbox" class="role-check" data-id="${p.id}" data-role="${r}" ${p.roles.includes(r)?'checked':''}> ${ROLE_LABEL[r]}</label>`).join('')}
+          </div>
+          <button class="icon-btn danger delete-player" data-id="${p.id}" title="Supprimer le membre">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+
+    $$('.role-check').forEach(chk => {
+      chk.addEventListener('change', async ()=>{
+        const p = players.find(x=>x.id===chk.dataset.id);
+        const role = chk.dataset.role;
+        if(chk.checked && !p.roles.includes(role)) p.roles.push(role);
+        if(!chk.checked && p.roles.includes(role)) p.roles = p.roles.filter(r=>r!==role);
+        await saveData();
+        initAuth();
+      });
+    });
+
+    $$('.delete-player').forEach(btn => {
+      btn.addEventListener('click', async ()=>{
+        const id = btn.dataset.id;
+        if(players.length <= 1){
+          alert("Impossible de supprimer le dernier membre.");
+          return;
+        }
+        if(confirm("Voulez-vous vraiment supprimer ce membre du club ?")){
+          players = players.filter(p => p.id !== id);
+          await saveData();
+          renderRoster();
+        }
+      });
+    });
+  }
+
+  function renderMatchesAdmin(){
+    const list = $('#matches-list');
+    list.innerHTML = matches.map(m => `
+      <div class="match-row">
+        <div class="mtop">
+          <div>
+            <div class="mtitle">Fast Foot vs ${m.ext} (${m.date})</div>
+            <div class="msub">${m.code} · ${m.salle} · ${m.heure}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function switchTab(tab){
+    $$('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+    $$('.view').forEach(v=>v.classList.remove('active'));
+    $('#view-'+tab).classList.add('active');
+    if(tab==='boulet') renderBouletSection();
+  }
+  $$('.tab-btn').forEach(b=> b.addEventListener('click', ()=> switchTab(b.dataset.tab)));
+  $$('.subtab-btn').forEach(b=> b.addEventListener('click', (e)=>{
+    $$('.subtab-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    $$('.subview').forEach(x=>x.classList.remove('active'));
+    $('#sub-'+b.dataset.sub).classList.add('active');
+  }));
+
+  (async function init(){
+    await loadData();
+    initAuth();
+  })();
+})();
+</script>
+</body>
+</html>
