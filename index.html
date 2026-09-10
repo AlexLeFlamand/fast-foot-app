@@ -283,10 +283,11 @@
             <div id="panel-admin" class="panel">
                 <div class="roster-card">
                     <h2 style="font-size: 18px; margin-top:0; color: var(--pitch);">Console Administrateur - Gestion des Matchs</h2>
-                    <p style="font-size: 13px; color: var(--ink-soft);">Ajoutez ou supprimez des rencontres du calendrier officiel.</p>
+                    <p style="font-size: 13px; color: var(--ink-soft);">Ajoutez de nouveaux matchs ou modifiez les matchs existants.</p>
                     
                     <div style="background: white; padding: 16px; border-radius: 12px; border: 2px solid var(--line); margin-top: 14px;">
-                        <h4 style="margin: 0 0 12px; color: var(--pitch);">➕ Ajouter un nouveau match</h4>
+                        <h4 style="margin: 0 0 12px; color: var(--pitch);" id="form-match-title">➕ Ajouter un nouveau match</h4>
+                        <input type="hidden" id="edit-match-original-code" value="">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                             <div>
                                 <label style="font-size:11px; font-weight:700;">Code</label>
@@ -321,7 +322,10 @@
                                 <input type="text" id="new-match-address" placeholder="Chau. de Wavre 99..." style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--line);">
                             </div>
                         </div>
-                        <button class="btn-primary" style="margin-top: 10px;" onclick="addNewMatch()">Enregistrer le nouveau match</button>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button class="btn-primary" id="btn-save-match" onclick="saveOrUpdateMatch()">Enregistrer le nouveau match</button>
+                            <button class="btn-cancel" id="btn-cancel-edit" style="display:none; width: auto; padding: 14px 20px;" onclick="cancelEditMatch()">Annuler</button>
+                        </div>
                     </div>
 
                     <div style="background: white; padding: 16px; border-radius: 12px; border: 2px solid var(--line); margin-top: 20px;">
@@ -686,7 +690,8 @@
                         <td><strong>${m.code}</strong></td>
                         <td>${m.date} (${m.time})</td>
                         <td>${m.dom} vs ${m.ext}</td>
-                        <td>
+                        <td style="display:flex; gap:6px;">
+                            <button onclick="editMatch('${m.code}')" style="background:var(--pitch); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Modifier</button>
                             <button onclick="deleteMatch('${m.code}')" style="background:var(--red); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Supprimer</button>
                         </td>
                     </tr>
@@ -694,7 +699,8 @@
             });
         }
 
-        function addNewMatch() {
+        function saveOrUpdateMatch() {
+            const originalCode = document.getElementById('edit-match-original-code').value;
             const code = document.getElementById('new-match-code').value.trim();
             const date = document.getElementById('new-match-date').value.trim();
             const dayOfWeek = document.getElementById('new-match-day').value.trim();
@@ -710,16 +716,89 @@
             }
 
             const isHome = (dom === 'Fast Foot');
-            const newMatch = {
-                code, date, fullDate: "2026-09-12", dayOfWeek: dayOfWeek || "DIM.", time: time || "20h00",
-                isHome, dom, ext, location: location || "Grez-Doiceau", address: address || "Chau. de Wavre 99, 1390 Grez-Doiceau"
-            };
 
-            matchsData.push(newMatch);
+            if(originalCode) {
+                // Mode Modification
+                const index = matchsData.findIndex(m => m.code === originalCode);
+                if(index !== -1) {
+                    matchsData[index] = {
+                        ...matchsData[index],
+                        code, date, dayOfWeek: dayOfWeek || "DIM.", time: time || "20h00",
+                        isHome, dom, ext, opponent: ext, location: location || "Grez-Doiceau", address: address || "Chau. de Wavre 99, 1390 Grez-Doiceau"
+                    };
+                    
+                    // Si le code a changé, on met à jour les clés dans les stats/présences stockées
+                    if(originalCode !== code) {
+                        if(userPresences[originalCode]) {
+                            userPresences[code] = userPresences[originalCode];
+                            delete userPresences[originalCode];
+                            localStorage.setItem('ff_presences', JSON.stringify(userPresences));
+                        }
+                        if(matchStats[originalCode]) {
+                            matchStats[code] = matchStats[originalCode];
+                            delete matchStats[originalCode];
+                            localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
+                        }
+                    }
+                }
+                alert("Match modifié avec succès !");
+                cancelEditMatch();
+            } else {
+                // Mode Ajout
+                const newMatch = {
+                    code, date, fullDate: "2026-09-12", dayOfWeek: dayOfWeek || "DIM.", time: time || "20h00",
+                    isHome, dom, ext, opponent: ext, location: location || "Grez-Doiceau", address: address || "Chau. de Wavre 99, 1390 Grez-Doiceau"
+                };
+                matchsData.push(newMatch);
+                alert("Match ajouté avec succès !");
+                document.getElementById('new-match-code').value = '';
+                document.getElementById('new-match-date').value = '';
+                document.getElementById('new-match-ext').value = '';
+                document.getElementById('new-match-location').value = '';
+                document.getElementById('new-match-address').value = '';
+            }
+
             localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
-            alert("Match ajouté avec succès !");
             renderMatches();
             renderAdminMatchesList();
+        }
+
+        function editMatch(code) {
+            const m = matchsData.find(x => x.code === code);
+            if(!m) return;
+            
+            document.getElementById('edit-match-original-code').value = m.code;
+            document.getElementById('new-match-code').value = m.code;
+            document.getElementById('new-match-date').value = m.date;
+            document.getElementById('new-match-day').value = m.dayOfWeek || "";
+            document.getElementById('new-match-time').value = m.time || "";
+            document.getElementById('new-match-dom').value = m.dom || "Fast Foot";
+            document.getElementById('new-match-ext').value = m.ext || "";
+            document.getElementById('new-match-location').value = m.location || "";
+            document.getElementById('new-match-address').value = m.address || "";
+
+            document.getElementById('form-match-title').textContent = `✏️ Modifier le match (${m.code})`;
+            document.getElementById('btn-save-match').textContent = "Mettre à jour le match";
+            document.getElementById('btn-cancel-edit').style.display = "inline-block";
+            
+            // Remonter en haut de l'onglet admin pour voir le formulaire
+            document.querySelector('#panel-admin').scrollTop = 0;
+        }
+
+        function cancelEditMatch() {
+            document.getElementById('edit-match-original-code').value = '';
+            document.getElementById('new-match-code').value = '';
+            document.getElementById('new-match-date').value = '';
+            document.getElementById('new-match-day').value = '';
+            document.getElementById('new-match-time').value = '';
+            document.getElementById('new-match-dom').value = 'Fast Foot';
+            document.getElementById('new-match-ext').value = '';
+            document.getElementById('new-match-location').value = '';
+            document.getElementById('new-match-address').value = '';
+
+            document.getElementById('form-match-title').textContent = "➕ Ajouter un nouveau match";
+            document.getElementById('btn-save-match').textContent = "Enregistrer le nouveau match";
+            document.getElementById('btn-cancel-edit').style.display = "none";
         }
 
         function deleteMatch(code) {
