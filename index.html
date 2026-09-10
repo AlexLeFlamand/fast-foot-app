@@ -306,7 +306,7 @@
                                 <input type="text" id="new-match-code" placeholder="ex: BA1034" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--line);">
                             </div>
                             <div>
-                                <label style="font-size:11px; font-weight:700;">Date du Match</label>
+                                <label style="font-size:11px; font-weight:700;">Date du Match (jj/mm/aaaa)</label>
                                 <input type="date" id="new-match-date-picker" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--line);">
                             </div>
                             <div>
@@ -346,7 +346,7 @@
                         <h4 style="margin: 0 0 12px; color: var(--pitch);">📋 Liste des Matchs Existants</h4>
                         <div style="max-height: 250px; overflow-y: auto;">
                             <table class="roster-table" id="admin-match-list-table">
-                                <thead><tr><th>Code</th><th>Date</th><th>Affiche</th><th>Actions</th></tr></thead>
+                                <thead><tr><th>Code</th><th>Date & Heure</th><th>Affiche</th><th>Actions</th></tr></thead>
                                 <tbody id="admin-matches-tbody"></tbody>
                             </table>
                         </div>
@@ -449,7 +449,7 @@
     </div>
 
     <script>
-        let baseJoueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alexandre", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
+        let baseJoueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alex", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
         
         // Charger les profils personnalisés ou initialiser
         let joueursData = JSON.parse(localStorage.getItem('ff_joueurs_custom') || 'null') || baseJoueursData;
@@ -523,7 +523,6 @@
         }
 
         function updateUserBar() {
-            // S'assurer d'avoir les données à jour du currentUser
             currentUser = getPlayer(currentUser.email);
             document.getElementById('user-profile-name').textContent = `${currentUser.prenom} ${currentUser.nom} ${currentUser.surnom ? `("${currentUser.surnom}")` : ''}`;
             document.getElementById('user-profile-email').textContent = currentUser.email;
@@ -654,7 +653,6 @@
                     drawCanvas();
                 }
             } else {
-                // Dessiner les initiales par défaut sur le canvas
                 ctx.fillStyle = '#0F2E24';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = '#FFFFFF';
@@ -697,12 +695,10 @@
             currentUser.surnom = document.getElementById('profile-surnom').value.trim();
             currentUser.showEmail = document.getElementById('profile-show-email').checked;
 
-            // Sauvegarder la photo si un canvas a été modifié
             const canvasData = document.getElementById('avatar-canvas').toDataURL('image/jpeg', 0.8);
             userAvatars[currentUser.email] = canvasData;
             localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
 
-            // Mettre à jour dans la liste globale des joueurs
             const idx = joueursData.findIndex(j => j.email === currentUser.email);
             if(idx !== -1) {
                 joueursData[idx] = currentUser;
@@ -721,7 +717,6 @@
             document.getElementById('avatar-file-input').value = ""; 
         }
 
-        // --- CHANGEMENT DE RÔLE PAR UN ADMIN ---
         function changePlayerRole(email, newRole) {
             const j = joueursData.find(x => x.email === email);
             if(j) {
@@ -851,10 +846,6 @@
                                 <option value="Administrateur - Joueur" ${j.role.includes('Administrateur') ? 'selected' : ''}>Administrateur</option>
                             </select>
                         </td>`;
-                } else {
-                    const canSeeEmail = j.showEmail || currentUser.email === j.email;
-                    emailCellHTML = ''; // Caché pour les non-admins dans le tableau si non requis, ou affiché selon la consigne ("Les administrateurs, ils voient tout comme les joueurs + adresse mail")
-                    roleCellHTML = '';
                 }
 
                 tbody.innerHTML += `
@@ -875,10 +866,20 @@
             if(!tbody) return;
             tbody.innerHTML = '';
             matchsData.forEach((m) => {
+                // Formater la date et l'heure à l'européen (ex: 27/09/2026 à 20h00)
+                let europeanDateTime = m.date;
+                if(m.fullDate) {
+                    const parts = m.fullDate.split('-');
+                    if(parts.length === 3) {
+                        europeanDateTime = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    }
+                }
+                europeanDateTime += ` (${m.time})`;
+
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${m.code}</strong></td>
-                        <td>${m.date} (${m.time})</td>
+                        <td>${europeanDateTime}</td>
                         <td>${m.dom} vs ${m.ext}</td>
                         <td style="display:flex; gap:6px;">
                             <button onclick="editMatch('${m.code}')" style="background:var(--pitch); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Modifier</button>
