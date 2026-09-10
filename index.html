@@ -272,7 +272,7 @@
                     <h2 style="font-size: 18px; margin-top:0;">Effectif Officiel</h2>
                     <div style="overflow-x: auto;">
                         <table class="roster-table" id="roster-table-el">
-                            <thead><tr><th>Joueur</th><th>Affiliation</th><th>Téléphone</th><th>Rôle</th></tr></thead>
+                            <thead><tr><th>Joueur</th><th>Affiliation</th><th>Téléphone</th><th id="th-role-header">Rôle</th></tr></thead>
                             <tbody></tbody>
                         </table>
                     </div>
@@ -432,7 +432,7 @@
         const selectEl = document.getElementById('login-select');
         const playerSelects = document.querySelectorAll('.player-select');
         joueursData.forEach((j) => {
-            const opt = document.createElement('option'); opt.value = j.email; opt.textContent = `${j.prenom} ${j.nom} (${j.role})`;
+            const opt = document.createElement('option'); opt.value = j.email; opt.textContent = `${j.prenom} ${j.nom}`;
             if(j.email === 'alex.spletinckx@gmail.com') opt.selected = true;
             selectEl.appendChild(opt);
             
@@ -662,8 +662,17 @@
 
         function renderRoster() {
             const tbody = document.querySelector('#roster-table-el tbody'); tbody.innerHTML = '';
+            const thRole = document.getElementById('th-role-header');
+            
+            if(currentUser.isAdmin) {
+                thRole.style.display = '';
+            } else {
+                thRole.style.display = 'none';
+            }
+
             joueursData.forEach(j => {
-                tbody.innerHTML += `<tr><td><strong>${j.prenom} ${j.nom}</strong><br><span style="font-size:11px; color:var(--ink-soft);">${j.email}</span></td><td>${j.affiliation}</td><td>${j.telephone}</td><td><span class="badge ${j.isAdmin ? 'badge-admin' : 'badge-player'}">${j.role}</span></td></tr>`;
+                let roleCellHTML = currentUser.isAdmin ? `<td><span class="badge ${j.isAdmin ? 'badge-admin' : 'badge-player'}">${j.role}</span></td>` : '';
+                tbody.innerHTML += `<tr><td><strong>${j.prenom} ${j.nom}</strong><br><span style="font-size:11px; color:var(--ink-soft);">${j.email}</span></td><td>${j.affiliation}</td><td>${j.telephone}</td>${roleCellHTML}</tr>`;
             });
         }
 
