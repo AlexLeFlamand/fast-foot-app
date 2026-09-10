@@ -144,14 +144,23 @@
         .p-btn.active-present { background: var(--present); color: white; border-color: var(--present); }
         .p-btn.active-uncertain { background: var(--uncertain); color: white; border-color: var(--uncertain); }
         .p-btn.active-absent { background: var(--absent); color: white; border-color: var(--absent); }
-        .presence-stats { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 10px; }
+        
+        .presence-voters-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; }
+        .voters-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .voter-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; border: 1px solid var(--line); background: var(--pitch); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+        .voter-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .presence-stats { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--ink-soft); padding-top: 6px; }
 
         .btn-admin-edit { background: var(--admin); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-transform: uppercase; float: right; }
 
         .roster-card { background: var(--paper); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); border: 2px solid var(--line); margin-bottom: 20px;}
         .roster-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
-        .roster-table th, .roster-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); font-size: 14px; }
+        .roster-table th, .roster-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
         .roster-table th { font-size: 12px; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; background: rgba(22,32,27,0.03); }
+        
+        .roster-avatar-cell { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--pitch); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; border: 1px solid var(--line); }
+        .roster-avatar-cell img { width: 100%; height: 100%; object-fit: cover; }
 
         .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media(max-width: 768px) { .rank-grid { grid-template-columns: 1fr; } .tabs { grid-template-columns: 1fr 1fr; } }
@@ -272,7 +281,7 @@
                     <h2 style="font-size: 18px; margin-top:0;">Effectif Officiel</h2>
                     <div style="overflow-x: auto;">
                         <table class="roster-table" id="roster-table-el">
-                            <thead><tr><th>Joueur</th><th>Affiliation</th><th>Téléphone</th><th id="th-role-header">Rôle</th></tr></thead>
+                            <thead><tr><th style="width: 50px;">Photo</th><th>Joueur</th><th>Affiliation</th><th>Téléphone</th><th id="th-role-header">Rôle</th></tr></thead>
                             <tbody></tbody>
                         </table>
                     </div>
@@ -315,6 +324,7 @@
                                     <option value="Grez-Doiceau">Grez-Doiceau</option>
                                     <option value="Wavre">Wavre</option>
                                     <option value="Limal">Limal</option>
+                                    <option value="Ottignies">Ottignies</option>
                                     <option value="Autre">Autre / Personnalisé</option>
                                 </select>
                             </div>
@@ -422,12 +432,16 @@
     <script>
         const joueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alexandre", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
         
-        let matchsData = JSON.parse(localStorage.getItem('ff_custom_matchs') || 'null') || [{"code": "BA1033", "date": "27 SEPT. 2026", "fullDate": "2026-09-27", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Peru Boys", "opponent": "Peru Boys", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC013", "date": "11 OCT. 2026", "fullDate": "2026-10-11", "dayOfWeek": "DIM.", "time": "21h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC017", "date": "18 OCT. 2026", "fullDate": "2026-10-18", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1014", "date": "25 OCT. 2026", "fullDate": "2026-10-25", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "Foxtrot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A041", "date": "31 OCT. 2026", "fullDate": "2026-10-31", "dayOfWeek": "SAM.", "time": "20h00", "isHome": false, "dom": "FC MJ", "ext": "Fast Foot", "opponent": "FC MJ", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1024", "date": "1 NOV. 2026", "fullDate": "2026-11-01", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "RWD Limal", "opponent": "RWD Limal", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A056", "date": "16 NOV. 2026", "fullDate": "2026-11-16", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "Zozos du Foot", "ext": "Fast Foot", "opponent": "Zozos du Foot", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A064", "date": "22 NOV. 2026", "fullDate": "2026-11-22", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FCL Corbais", "opponent": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A074", "date": "29 NOV. 2026", "fullDate": "2026-11-29", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "RC Border Line", "ext": "Fast Foot", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A085", "date": "6 DÉC. 2026", "fullDate": "2026-12-06", "dayOfWeek": "DIM.", "time": "20h30", "isHome": false, "dom": "All Blacks", "ext": "Fast Foot", "opponent": "All Blacks", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A095", "date": "13 DÉC. 2026", "fullDate": "2026-12-13", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Ayouka", "ext": "Fast Foot", "opponent": "Ayouka", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A103", "date": "10 JANV. 2027", "fullDate": "2027-01-10", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "US Comete", "opponent": "US Comete", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A113", "date": "24 JANV. 2027", "fullDate": "2027-01-24", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "Les Djogabonito", "ext": "Fast Foot", "opponent": "Les Djogabonito", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A124", "date": "31 JANV. 2027", "fullDate": "2027-01-31", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Foxtrot", "ext": "Fast Foot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A134", "date": "7 FÉVR. 2027", "fullDate": "2027-02-07", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Zozos du Foot", "opponent": "Zozos du Foot", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A142", "date": "14 FÉVR. 2027", "fullDate": "2027-02-14", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "FCL Corbais", "ext": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A156", "date": "8 MARS 2027", "fullDate": "2027-03-08", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "RWD Limal", "ext": "Fast Foot", "opponent": "RWD Limal", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A166", "date": "21 MARS 2027", "fullDate": "2027-03-21", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "RC Border Line", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A175", "date": "28 MARS 2027", "fullDate": "2027-03-28", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FC MJ", "opponent": "FC MJ", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A184", "date": "11 AVR. 2027", "fullDate": "2027-04-11", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A194", "date": "25 AVR. 2027", "fullDate": "2027-04-25", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Ayouka", "opponent": "Ayouka", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A202", "date": "8 MAI 2027", "fullDate": "2027-05-08", "dayOfWeek": "SAM.", "time": "21h00", "isHome": false, "dom": "Peru Boys", "ext": "Fast Foot", "opponent": "Peru Boys", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A213", "date": "23 MAI 2027", "fullDate": "2027-05-23", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A223", "date": "30 MAI 2027", "fullDate": "2027-05-30", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Les Djogabonito", "opponent": "Les Djogabonito", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}];
+        let initialMatchsData = [{"code": "BA1033", "date": "27 SEPT. 2026", "fullDate": "2026-09-27", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Peru Boys", "opponent": "Peru Boys", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC013", "date": "11 OCT. 2026", "fullDate": "2026-10-11", "dayOfWeek": "DIM.", "time": "21h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC017", "date": "18 OCT. 2026", "fullDate": "2026-10-18", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1014", "date": "25 OCT. 2026", "fullDate": "2026-10-25", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "Foxtrot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A041", "date": "31 OCT. 2026", "fullDate": "2026-10-31", "dayOfWeek": "SAM.", "time": "20h00", "isHome": false, "dom": "FC MJ", "ext": "Fast Foot", "opponent": "FC MJ", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1024", "date": "1 NOV. 2026", "fullDate": "2026-11-01", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "RWD Limal", "opponent": "RWD Limal", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A056", "date": "16 NOV. 2026", "fullDate": "2026-11-16", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "Zozos du Foot", "ext": "Fast Foot", "opponent": "Zozos du Foot", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A064", "date": "22 NOV. 2026", "fullDate": "2026-11-22", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FCL Corbais", "opponent": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A074", "date": "29 NOV. 2026", "fullDate": "2026-11-29", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "RC Border Line", "ext": "Fast Foot", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A085", "date": "6 DÉC. 2026", "fullDate": "2026-12-06", "dayOfWeek": "DIM.", "time": "20h30", "isHome": false, "dom": "All Blacks", "ext": "Fast Foot", "opponent": "All Blacks", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A095", "date": "13 DÉC. 2026", "fullDate": "2026-12-13", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Ayouka", "ext": "Fast Foot", "opponent": "Ayouka", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A103", "date": "10 JANV. 2027", "fullDate": "2027-01-10", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "US Comete", "opponent": "US Comete", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A113", "date": "24 JANV. 2027", "fullDate": "2027-01-24", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "Les Djogabonito", "ext": "Fast Foot", "opponent": "Les Djogabonito", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A124", "date": "31 JANV. 2027", "fullDate": "2027-01-31", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Foxtrot", "ext": "Fast Foot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A134", "date": "7 FÉVR. 2027", "fullDate": "2027-02-07", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Zozos du Foot", "opponent": "Zozos du Foot", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A142", "date": "14 FÉVR. 2027", "fullDate": "2027-02-14", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "FCL Corbais", "ext": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A156", "date": "8 MARS 2027", "fullDate": "2027-03-08", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "RWD Limal", "ext": "Fast Foot", "opponent": "RWD Limal", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A166", "date": "21 MARS 2027", "fullDate": "2027-03-21", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "RC Border Line", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A175", "date": "28 MARS 2027", "fullDate": "2027-03-28", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FC MJ", "opponent": "FC MJ", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A184", "date": "11 AVR. 2027", "fullDate": "2027-04-11", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A194", "date": "25 AVR. 2027", "fullDate": "2027-04-25", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Ayouka", "opponent": "Ayouka", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A202", "date": "8 MAI 2027", "fullDate": "2027-05-08", "dayOfWeek": "SAM.", "time": "21h00", "isHome": false, "dom": "Peru Boys", "ext": "Fast Foot", "opponent": "Peru Boys", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A213", "date": "23 MAI 2027", "fullDate": "2027-05-23", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A223", "date": "30 MAI 2027", "fullDate": "2027-05-30", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Les Djogabonito", "opponent": "Les Djogabonito", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}];
+
+        let storedMatchs = JSON.parse(localStorage.getItem('ff_custom_matchs') || 'null');
+        let matchsData = storedMatchs || initialMatchsData;
 
         const sallesConfig = {
             "Grez-Doiceau": "Chau. de Wavre 99, 1390 Grez-Doiceau",
             "Wavre": "Av. du Centre Sportif 22, 1300 Wavre",
-            "Limal": "Rue Charles Jaumotte 156, 1300 Wavre"
+            "Limal": "Rue Charles Jaumotte 156, 1300 Wavre",
+            "Ottignies": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"
         };
 
         let currentUser = null;
@@ -438,6 +452,17 @@
         function getPlayerName(email) {
             const j = joueursData.find(x => x.email === email);
             return j ? `${j.prenom} ${j.nom}` : email;
+        }
+
+        function getPlayerAvatarHTML(email, width=28, height=28) {
+            const j = joueursData.find(x => x.email === email);
+            const initials = j ? `${j.prenom[0]}${j.nom[0]}` : 'FF';
+            const img = userAvatars[email];
+            if(img) {
+                return `<div style="width:${width}px; height:${height}px; border-radius:50%; overflow:hidden; border:1px solid var(--line); flex-shrink:0;"><img src="${img}" style="width:100%; height:100%; object-fit:cover;" alt="Avatar"></div>`;
+            } else {
+                return `<div style="width:${width}px; height:${height}px; border-radius:50%; background:var(--pitch); color:white; display:flex; align-items:center; justify-content:center; font-size:${width*0.4}px; font-weight:700; border:1px solid var(--line); flex-shrink:0;">${initials}</div>`;
+            }
         }
 
         const selectEl = document.getElementById('login-select');
@@ -466,7 +491,7 @@
             const avatarDiv = document.getElementById('user-profile-avatar');
             avatarDiv.innerHTML = userAvatars[currentUser.email] 
                 ? `<img src="${userAvatars[currentUser.email]}" alt="Profil">`
-                : `<img src="Logo.jpeg" onerror="this.src='https://ui-avatars.com/api/?name=${currentUser.prenom[0]}&background=6FB92C&color=0F2E24'" alt="Logo">`;
+                : `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--pitch); color:white; font-weight:700;">${currentUser.prenom[0]}${currentUser.nom[0]}</div>`;
             
             const roleBadge = document.getElementById('user-role-badge');
             roleBadge.textContent = currentUser.isAdmin ? 'Admin' : 'Joueur';
@@ -487,6 +512,7 @@
             event.currentTarget.classList.add('active');
             if(tabName === 'stats') renderRankings();
             if(tabName === 'admin') renderAdminMatchesList();
+            if(tabName === 'roster') renderRoster();
         }
 
         function setPresence(code, status) {
@@ -498,13 +524,16 @@
 
         function renderMatches() {
             const container = document.getElementById('matches-container'); container.innerHTML = '';
-            // Tri par date chronologique
             matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
             
             matchsData.forEach(m => {
                 const presences = userPresences[m.code] || {};
-                let p=0, u=0, a=0;
-                for(let k in presences) { if(presences[k]==='present') p++; else if(presences[k]==='uncertain') u++; else a++; }
+                let pList = [], uList = [], aList = [];
+                for(let email in presences) {
+                    if(presences[email] === 'present') pList.push(email);
+                    else if(presences[email] === 'uncertain') uList.push(email);
+                    else if(presences[email] === 'absent') aList.push(email);
+                }
                 
                 const stats = matchStats[m.code];
                 let scoreHTML = `<span class="vs">vs</span>`;
@@ -547,7 +576,20 @@
                             <button class="p-btn ${myStatus === 'uncertain' ? 'active-uncertain' : ''}" onclick="setPresence('${m.code}', 'uncertain')">Incertain</button>
                             <button class="p-btn ${myStatus === 'absent' ? 'active-absent' : ''}" onclick="setPresence('${m.code}', 'absent')">Absent</button>
                         </div>
-                        <div class="presence-stats"><span>🟢 ${p} présent(s)</span><span>🟡 ${u} incertain(s)</span><span>🔴 ${a} absent(s)</span></div>
+                        <div class="presence-voters-list">
+                            <div class="voters-group">
+                                <strong>🟢 Présents (${pList.length}):</strong>
+                                ${pList.length > 0 ? pList.map(email => `<div title="${getPlayerName(email)}">${getPlayerAvatarHTML(email, 28, 28)}</div>`).join('') : '<span style="color:var(--ink-soft); font-style:italic; margin-left:4px;">Aucun</span>'}
+                            </div>
+                            <div class="voters-group">
+                                <strong>🟡 Incertains (${uList.length}):</strong>
+                                ${uList.length > 0 ? uList.map(email => `<div title="${getPlayerName(email)}">${getPlayerAvatarHTML(email, 28, 28)}</div>`).join('') : '<span style="color:var(--ink-soft); font-style:italic; margin-left:4px;">Aucun</span>'}
+                            </div>
+                            <div class="voters-group">
+                                <strong>🔴 Absents (${aList.length}):</strong>
+                                ${aList.length > 0 ? aList.map(email => `<div title="${getPlayerName(email)}">${getPlayerAvatarHTML(email, 28, 28)}</div>`).join('') : '<span style="color:var(--ink-soft); font-style:italic; margin-left:4px;">Aucun</span>'}
+                            </div>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -583,6 +625,8 @@
             userAvatars[currentUser.email] = document.getElementById('avatar-canvas').toDataURL('image/jpeg', 0.8);
             localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
             updateUserBar(); closeAvatarModal();
+            renderRoster();
+            renderMatches();
         }
         function closeAvatarModal() { document.getElementById('modal-avatar').style.display = 'none'; document.getElementById('avatar-file-input').value = ""; }
 
@@ -685,8 +729,9 @@
             }
 
             joueursData.forEach(j => {
+                const avatarHTML = getPlayerAvatarHTML(j.email, 40, 40);
                 let roleCellHTML = currentUser.isAdmin ? `<td><span class="badge ${j.isAdmin ? 'badge-admin' : 'badge-player'}">${j.role}</span></td>` : '';
-                tbody.innerHTML += `<tr><td><strong>${j.prenom} ${j.nom}</strong><br><span style="font-size:11px; color:var(--ink-soft);">${j.email}</span></td><td>${j.affiliation}</td><td>${j.telephone}</td>${roleCellHTML}</tr>`;
+                tbody.innerHTML += `<tr><td>${avatarHTML}</td><td><strong>${j.prenom} ${j.nom}</strong><br><span style="font-size:11px; color:var(--ink-soft);">${j.email}</span></td><td>${j.affiliation}</td><td>${j.telephone}</td>${roleCellHTML}</tr>`;
             });
         }
 
@@ -734,7 +779,6 @@
                 return;
             }
 
-            // Formater la date proprement (ex: 15 OCT. 2026)
             const dObj = new Date(datePickerVal);
             const jours = ["DIM.", "LUN.", "MAR.", "MER.", "JEU.", "VEN.", "SAM."];
             const mois = ["JANV.", "FÉVR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AOÛT", "SEPT.", "OCT.", "NOV.", "DÉC."];
@@ -749,7 +793,6 @@
             const isHome = (dom === 'Fast Foot');
 
             if(originalCode) {
-                // Mode Modification
                 const index = matchsData.findIndex(m => m.code === originalCode);
                 if(index !== -1) {
                     matchsData[index] = {
@@ -780,7 +823,6 @@
                 alert("Match modifié avec succès !");
                 cancelEditMatch();
             } else {
-                // Mode Ajout
                 const newMatch = {
                     code, 
                     date: formattedDate, 
@@ -799,7 +841,6 @@
                 document.getElementById('new-match-address').value = '';
             }
 
-            // Ré-ordonner les matchs par ordre chronologique
             matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
 
             localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
@@ -859,7 +900,6 @@
             }
         }
 
-        // Initialiser l'adresse par défaut au chargement
         window.addEventListener('DOMContentLoaded', () => {
             onLocationChange();
         });
