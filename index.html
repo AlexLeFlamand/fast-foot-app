@@ -150,17 +150,12 @@
         .voter-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; border: 1px solid var(--line); background: var(--pitch); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
         .voter-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .presence-stats { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--ink-soft); padding-top: 6px; }
-
         .btn-admin-edit { background: var(--admin); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-transform: uppercase; float: right; }
 
         .roster-card { background: var(--paper); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); border: 2px solid var(--line); margin-bottom: 20px;}
         .roster-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
         .roster-table th, .roster-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
         .roster-table th { font-size: 12px; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; background: rgba(22,32,27,0.03); }
-        
-        .roster-avatar-cell { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--pitch); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; border: 1px solid var(--line); }
-        .roster-avatar-cell img { width: 100%; height: 100%; object-fit: cover; }
 
         .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media(max-width: 768px) { .rank-grid { grid-template-columns: 1fr; } .tabs { grid-template-columns: 1fr 1fr; } }
@@ -223,15 +218,14 @@
             
             <div class="user-card">
                 <div class="user-info">
-                    <div class="user-avatar-container" onclick="document.getElementById('avatar-file-input').click()" title="Changer ma photo de profil">
+                    <div class="user-avatar-container" onclick="openProfileModal()" title="Modifier mon profil">
                         <div class="user-avatar" id="user-profile-avatar"></div>
-                        <div class="avatar-edit-overlay">📷</div>
+                        <div class="avatar-edit-overlay">⚙️</div>
                     </div>
-                    <input type="file" id="avatar-file-input" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
                     <div class="user-details">
                         <h3 id="user-profile-name">Nom</h3>
                         <p id="user-profile-email">Email</p>
-                        <p style="font-size: 11px; color: var(--grass-2); margin: 2px 0 0; font-weight: 600;">💡 Cliquez sur l'image pour cadrer votre photo</p>
+                        <p style="font-size: 11px; color: var(--grass-2); margin: 2px 0 0; font-weight: 600;">💡 Cliquez pour modifier vos infos & photo</p>
                     </div>
                 </div>
                 <div class="badges-row">
@@ -281,7 +275,16 @@
                     <h2 style="font-size: 18px; margin-top:0;">Effectif Officiel</h2>
                     <div style="overflow-x: auto;">
                         <table class="roster-table" id="roster-table-el">
-                            <thead><tr><th style="width: 50px;">Photo</th><th>Joueur</th><th>Affiliation</th><th>Téléphone</th><th id="th-role-header">Rôle</th></tr></thead>
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">Photo</th>
+                                    <th>Joueur</th>
+                                    <th>Affiliation</th>
+                                    <th>Téléphone</th>
+                                    <th id="th-email-header">Email</th>
+                                    <th id="th-role-header">Rôle</th>
+                                </tr>
+                            </thead>
                             <tbody></tbody>
                         </table>
                     </div>
@@ -354,16 +357,32 @@
         </div>
     </div>
 
-    <!-- MODAL AVATAR CROPPER -->
-    <div class="modal-overlay" id="modal-avatar">
+    <!-- MODAL PROFILE MANAGEMENT -->
+    <div class="modal-overlay" id="modal-profile">
         <div class="modal">
-            <h3>Cadrer ma photo</h3>
-            <p style="font-size: 12px; color: var(--ink-soft);">Utilisez le curseur pour zoomer.</p>
-            <canvas id="avatar-canvas" width="200" height="200"></canvas>
-            <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1" style="width:100%; margin: 16px 0;" oninput="drawCanvas()">
+            <h3>Mon Profil</h3>
+            
+            <div class="form-group" style="text-align: center;">
+                <label>Photo de profil</label>
+                <canvas id="avatar-canvas" width="160" height="160" style="border: 2px dashed var(--line); border-radius: 50%; margin: 10px auto; display: block; cursor: crosshair;"></canvas>
+                <input type="file" id="avatar-file-input" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                <button class="btn-small" onclick="document.getElementById('avatar-file-input').click()">Choisir une photo</button>
+                <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1" style="width:100%; margin: 12px 0 0;" oninput="drawCanvas()">
+            </div>
+
+            <div class="form-group">
+                <label>Surnom / Pseudo</label>
+                <input type="text" id="profile-surnom" placeholder="ex: Le Canonnier">
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="profile-show-email" style="width: 20px; height: 20px;">
+                <label for="profile-show-email" style="margin: 0; cursor: pointer;">Afficher mon email aux coéquipiers</label>
+            </div>
+
             <div class="modal-buttons">
-                <button class="btn-primary" onclick="saveAvatar()">Sauvegarder</button>
-                <button class="btn-cancel" onclick="closeAvatarModal()">Annuler</button>
+                <button class="btn-primary" onclick="saveProfileChanges()">Enregistrer</button>
+                <button class="btn-cancel" onclick="closeProfileModal()">Annuler</button>
             </div>
         </div>
     </div>
@@ -430,8 +449,11 @@
     </div>
 
     <script>
-        const joueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alexandre", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
+        let baseJoueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alexandre", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
         
+        // Charger les profils personnalisés ou initialiser
+        let joueursData = JSON.parse(localStorage.getItem('ff_joueurs_custom') || 'null') || baseJoueursData;
+
         let initialMatchsData = [{"code": "BA1033", "date": "27 SEPT. 2026", "fullDate": "2026-09-27", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Peru Boys", "opponent": "Peru Boys", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC013", "date": "11 OCT. 2026", "fullDate": "2026-10-11", "dayOfWeek": "DIM.", "time": "21h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BAC017", "date": "18 OCT. 2026", "fullDate": "2026-10-18", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1014", "date": "25 OCT. 2026", "fullDate": "2026-10-25", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "Foxtrot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A041", "date": "31 OCT. 2026", "fullDate": "2026-10-31", "dayOfWeek": "SAM.", "time": "20h00", "isHome": false, "dom": "FC MJ", "ext": "Fast Foot", "opponent": "FC MJ", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1024", "date": "1 NOV. 2026", "fullDate": "2026-11-01", "dayOfWeek": "DIM.", "time": "19h00", "isHome": true, "dom": "Fast Foot", "ext": "RWD Limal", "opponent": "RWD Limal", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A056", "date": "16 NOV. 2026", "fullDate": "2026-11-16", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "Zozos du Foot", "ext": "Fast Foot", "opponent": "Zozos du Foot", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A064", "date": "22 NOV. 2026", "fullDate": "2026-11-22", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FCL Corbais", "opponent": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A074", "date": "29 NOV. 2026", "fullDate": "2026-11-29", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "RC Border Line", "ext": "Fast Foot", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A085", "date": "6 DÉC. 2026", "fullDate": "2026-12-06", "dayOfWeek": "DIM.", "time": "20h30", "isHome": false, "dom": "All Blacks", "ext": "Fast Foot", "opponent": "All Blacks", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A095", "date": "13 DÉC. 2026", "fullDate": "2026-12-13", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Ayouka", "ext": "Fast Foot", "opponent": "Ayouka", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A103", "date": "10 JANV. 2027", "fullDate": "2027-01-10", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "US Comete", "opponent": "US Comete", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A113", "date": "24 JANV. 2027", "fullDate": "2027-01-24", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "Les Djogabonito", "ext": "Fast Foot", "opponent": "Les Djogabonito", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A124", "date": "31 JANV. 2027", "fullDate": "2027-01-31", "dayOfWeek": "DIM.", "time": "19h00", "isHome": false, "dom": "Foxtrot", "ext": "Fast Foot", "opponent": "Foxtrot", "location": "Ottignies", "address": "Rue des Coquerées 50A, 1341 Ottignies-Louvain-la-Neuve"}, {"code": "BA1A134", "date": "7 FÉVR. 2027", "fullDate": "2027-02-07", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Zozos du Foot", "opponent": "Zozos du Foot", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A142", "date": "14 FÉVR. 2027", "fullDate": "2027-02-14", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "FCL Corbais", "ext": "FCL Corbais", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A156", "date": "8 MARS 2027", "fullDate": "2027-03-08", "dayOfWeek": "LUN.", "time": "19h30", "isHome": false, "dom": "RWD Limal", "ext": "Fast Foot", "opponent": "RWD Limal", "location": "Limal", "address": "Rue Charles Jaumotte 156, 1300 Wavre"}, {"code": "BA1A166", "date": "21 MARS 2027", "fullDate": "2027-03-21", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "RC Border Line", "opponent": "RC Border Line", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A175", "date": "28 MARS 2027", "fullDate": "2027-03-28", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "FC MJ", "opponent": "FC MJ", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A184", "date": "11 AVR. 2027", "fullDate": "2027-04-11", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "All Blacks", "opponent": "All Blacks", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A194", "date": "25 AVR. 2027", "fullDate": "2027-04-25", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Ayouka", "opponent": "Ayouka", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}, {"code": "BA1A202", "date": "8 MAI 2027", "fullDate": "2027-05-08", "dayOfWeek": "SAM.", "time": "21h00", "isHome": false, "dom": "Peru Boys", "ext": "Fast Foot", "opponent": "Peru Boys", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A213", "date": "23 MAI 2027", "fullDate": "2027-05-23", "dayOfWeek": "DIM.", "time": "18h00", "isHome": false, "dom": "US Comete", "ext": "Fast Foot", "opponent": "US Comete", "location": "Wavre", "address": "Av. du Centre Sportif 22, 1300 Wavre"}, {"code": "BA1A223", "date": "30 MAI 2027", "fullDate": "2027-05-30", "dayOfWeek": "DIM.", "time": "20h00", "isHome": true, "dom": "Fast Foot", "ext": "Les Djogabonito", "opponent": "Les Djogabonito", "location": "Grez-Doiceau", "address": "Chau. de Wavre 99, 1390 Grez-Doiceau"}];
 
         let storedMatchs = JSON.parse(localStorage.getItem('ff_custom_matchs') || 'null');
@@ -449,13 +471,20 @@
         let userAvatars = JSON.parse(localStorage.getItem('ff_user_avatars') || '{}');
         let matchStats = JSON.parse(localStorage.getItem('ff_match_stats') || '{}');
 
+        function getPlayer(email) {
+            return joueursData.find(x => x.email === email);
+        }
+
         function getPlayerName(email) {
-            const j = joueursData.find(x => x.email === email);
-            return j ? `${j.prenom} ${j.nom}` : email;
+            const j = getPlayer(email);
+            if(!j) return email;
+            let name = `${j.prenom} ${j.nom}`;
+            if(j.surnom) name += ` ("${j.surnom}")`;
+            return name;
         }
 
         function getPlayerAvatarHTML(email, width=28, height=28) {
-            const j = joueursData.find(x => x.email === email);
+            const j = getPlayer(email);
             const initials = j ? `${j.prenom[0]}${j.nom[0]}` : 'FF';
             const img = userAvatars[email];
             if(img) {
@@ -465,29 +494,40 @@
             }
         }
 
-        const selectEl = document.getElementById('login-select');
-        const playerSelects = document.querySelectorAll('.player-select');
-        joueursData.forEach((j) => {
-            const opt = document.createElement('option'); opt.value = j.email; opt.textContent = `${j.prenom} ${j.nom}`;
-            if(j.email === 'alex.spletinckx@gmail.com') opt.selected = true;
-            selectEl.appendChild(opt);
-            
-            playerSelects.forEach(sel => {
-                const opt2 = document.createElement('option'); opt2.value = j.email; opt2.textContent = `${j.prenom} ${j.nom}`;
-                sel.appendChild(opt2);
+        function initSelects() {
+            const selectEl = document.getElementById('login-select');
+            selectEl.innerHTML = '';
+            const playerSelects = document.querySelectorAll('.player-select');
+            playerSelects.forEach(sel => sel.innerHTML = '<option value="">-- Choisir --</option>');
+
+            joueursData.forEach((j) => {
+                const opt = document.createElement('option'); opt.value = j.email; opt.textContent = `${j.prenom} ${j.nom} ${j.surnom ? `("${j.surnom}")` : ''}`;
+                if(currentUser && j.email === currentUser.email) opt.selected = true;
+                else if(!currentUser && j.email === 'alex.spletinckx@gmail.com') opt.selected = true;
+                selectEl.appendChild(opt);
+                
+                playerSelects.forEach(sel => {
+                    const opt2 = document.createElement('option'); opt2.value = j.email; opt2.textContent = `${j.prenom} ${j.nom} ${j.surnom ? `("${j.surnom}")` : ''}`;
+                    sel.appendChild(opt2);
+                });
             });
-        });
+        }
+        initSelects();
 
         function handleLogin() {
-            currentUser = joueursData.find(j => j.email === document.getElementById('login-select').value);
+            const selectedEmail = document.getElementById('login-select').value;
+            currentUser = getPlayer(selectedEmail);
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main-view').style.display = 'block';
             updateUserBar(); renderMatches(); renderRoster(); renderRankings(); renderAdminMatchesList();
         }
 
         function updateUserBar() {
-            document.getElementById('user-profile-name').textContent = `${currentUser.prenom} ${currentUser.nom}`;
+            // S'assurer d'avoir les données à jour du currentUser
+            currentUser = getPlayer(currentUser.email);
+            document.getElementById('user-profile-name').textContent = `${currentUser.prenom} ${currentUser.nom} ${currentUser.surnom ? `("${currentUser.surnom}")` : ''}`;
             document.getElementById('user-profile-email').textContent = currentUser.email;
+            
             const avatarDiv = document.getElementById('user-profile-avatar');
             avatarDiv.innerHTML = userAvatars[currentUser.email] 
                 ? `<img src="${userAvatars[currentUser.email]}" alt="Profil">`
@@ -596,7 +636,37 @@
             });
         }
 
+        // --- GESTION DU PROFIL PERSONNEL ---
         let tempImg = new Image();
+        function openProfileModal() {
+            document.getElementById('profile-surnom').value = currentUser.surnom || '';
+            document.getElementById('profile-show-email').checked = currentUser.showEmail !== undefined ? currentUser.showEmail : false;
+            
+            const existingAvatar = userAvatars[currentUser.email];
+            const canvas = document.getElementById('avatar-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+
+            if(existingAvatar) {
+                tempImg.src = existingAvatar;
+                tempImg.onload = () => {
+                    document.getElementById('zoom-slider').value = 1;
+                    drawCanvas();
+                }
+            } else {
+                // Dessiner les initiales par défaut sur le canvas
+                ctx.fillStyle = '#0F2E24';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 50px Plus Jakarta Sans';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${currentUser.prenom[0]}${currentUser.nom[0]}`, canvas.width/2, canvas.height/2);
+            }
+
+            document.getElementById('modal-profile').style.display = 'flex';
+        }
+
         function handleAvatarUpload(e) {
             const file = e.target.files[0]; if(!file) return;
             const reader = new FileReader();
@@ -604,16 +674,17 @@
                 tempImg.src = event.target.result;
                 tempImg.onload = () => {
                     document.getElementById('zoom-slider').value = 1;
-                    document.getElementById('modal-avatar').style.display = 'flex';
                     drawCanvas();
                 }
             };
             reader.readAsDataURL(file);
         }
+
         function drawCanvas() {
             const canvas = document.getElementById('avatar-canvas'); const ctx = canvas.getContext('2d');
             ctx.clearRect(0,0, canvas.width, canvas.height);
             const zoom = parseFloat(document.getElementById('zoom-slider').value);
+            if(!tempImg.src) return;
             const minDim = Math.min(tempImg.width, tempImg.height);
             const w = tempImg.width * (canvas.width / minDim) * zoom;
             const h = tempImg.height * (canvas.height / minDim) * zoom;
@@ -621,14 +692,45 @@
             const y = (canvas.height - h) / 2;
             ctx.drawImage(tempImg, x, y, w, h);
         }
-        function saveAvatar() {
-            userAvatars[currentUser.email] = document.getElementById('avatar-canvas').toDataURL('image/jpeg', 0.8);
+
+        function saveProfileChanges() {
+            currentUser.surnom = document.getElementById('profile-surnom').value.trim();
+            currentUser.showEmail = document.getElementById('profile-show-email').checked;
+
+            // Sauvegarder la photo si un canvas a été modifié
+            const canvasData = document.getElementById('avatar-canvas').toDataURL('image/jpeg', 0.8);
+            userAvatars[currentUser.email] = canvasData;
             localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
-            updateUserBar(); closeAvatarModal();
+
+            // Mettre à jour dans la liste globale des joueurs
+            const idx = joueursData.findIndex(j => j.email === currentUser.email);
+            if(idx !== -1) {
+                joueursData[idx] = currentUser;
+                localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
+            }
+
+            closeProfileModal();
+            updateUserBar();
+            initSelects();
             renderRoster();
             renderMatches();
         }
-        function closeAvatarModal() { document.getElementById('modal-avatar').style.display = 'none'; document.getElementById('avatar-file-input').value = ""; }
+
+        function closeProfileModal() { 
+            document.getElementById('modal-profile').style.display = 'none'; 
+            document.getElementById('avatar-file-input').value = ""; 
+        }
+
+        // --- CHANGEMENT DE RÔLE PAR UN ADMIN ---
+        function changePlayerRole(email, newRole) {
+            const j = joueursData.find(x => x.email === email);
+            if(j) {
+                j.role = newRole;
+                j.isAdmin = newRole.toLowerCase().includes('administrateur');
+                localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
+                renderRoster();
+            }
+        }
 
         let currentAdminMatch = null;
         let tempMatchStats = { scoreFF: "", scoreOpp: "", goals: [], cards: [], boulet: "" };
@@ -720,18 +822,51 @@
 
         function renderRoster() {
             const tbody = document.querySelector('#roster-table-el tbody'); tbody.innerHTML = '';
+            const thEmail = document.getElementById('th-email-header');
             const thRole = document.getElementById('th-role-header');
             
             if(currentUser.isAdmin) {
+                thEmail.style.display = '';
                 thRole.style.display = '';
             } else {
+                thEmail.style.display = 'none';
                 thRole.style.display = 'none';
             }
 
             joueursData.forEach(j => {
                 const avatarHTML = getPlayerAvatarHTML(j.email, 40, 40);
-                let roleCellHTML = currentUser.isAdmin ? `<td><span class="badge ${j.isAdmin ? 'badge-admin' : 'badge-player'}">${j.role}</span></td>` : '';
-                tbody.innerHTML += `<tr><td>${avatarHTML}</td><td><strong>${j.prenom} ${j.nom}</strong><br><span style="font-size:11px; color:var(--ink-soft);">${j.email}</span></td><td>${j.affiliation}</td><td>${j.telephone}</td>${roleCellHTML}</tr>`;
+                const displayName = `<strong>${j.prenom} ${j.nom}</strong>${j.surnom ? `<br><span style="color:var(--grass-2); font-weight:700; font-size:12px;">"${j.surnom}"</span>` : ''}`;
+                
+                let emailCellHTML = '';
+                let roleCellHTML = '';
+
+                if(currentUser.isAdmin) {
+                    const canSeeEmail = j.showEmail || currentUser.email === j.email;
+                    emailCellHTML = `<td>${canSeeEmail ? j.email : '<span style="color:var(--ink-soft); font-style:italic;">Masqué</span>'}</td>`;
+                    roleCellHTML = `
+                        <td>
+                            <select onchange="changePlayerRole('${j.email}', this.value)" style="padding:4px; border-radius:6px; font-size:12px; border:1px solid var(--line);">
+                                <option value="Joueur" ${j.role === 'Joueur' ? 'selected' : ''}>Joueur</option>
+                                <option value="Staff" ${j.role === 'Staff' ? 'selected' : ''}>Staff</option>
+                                <option value="Administrateur - Joueur" ${j.role.includes('Administrateur') ? 'selected' : ''}>Administrateur</option>
+                            </select>
+                        </td>`;
+                } else {
+                    const canSeeEmail = j.showEmail || currentUser.email === j.email;
+                    emailCellHTML = ''; // Caché pour les non-admins dans le tableau si non requis, ou affiché selon la consigne ("Les administrateurs, ils voient tout comme les joueurs + adresse mail")
+                    roleCellHTML = '';
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${avatarHTML}</td>
+                        <td>${displayName}</td>
+                        <td>${j.affiliation}</td>
+                        <td>${j.telephone}</td>
+                        ${currentUser.isAdmin ? emailCellHTML : ''}
+                        ${currentUser.isAdmin ? roleCellHTML : ''}
+                    </tr>
+                `;
             });
         }
 
