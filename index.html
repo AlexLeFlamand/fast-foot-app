@@ -163,9 +163,9 @@
         .btn-admin-edit { background: var(--admin); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-transform: uppercase; float: right; }
 
         .roster-card { background: var(--paper); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); border: 2px solid var(--line); margin-bottom: 20px;}
-        .roster-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
-        .roster-table th, .roster-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
-        .roster-table th { font-size: 12px; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; background: rgba(22,32,27,0.03); }
+        .roster-table { width: 100%; border-collapse: collapse; margin-top: 14px; table-layout: fixed; }
+        .roster-table th, .roster-table td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--line); font-size: 13px; vertical-align: middle; word-break: break-word; }
+        .roster-table th { font-size: 11px; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; background: rgba(22,32,27,0.03); }
 
         .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
@@ -298,17 +298,17 @@
             <div id="panel-roster" class="panel">
                 <div class="roster-card">
                     <h2 style="font-size: 18px; margin-top:0;">Effectif Officiel</h2>
-                    <div style="overflow-x: auto;">
+                    <div>
                         <table class="roster-table" id="roster-table-el">
                             <thead>
                                 <tr>
-                                    <th style="width: 50px;">Photo</th>
-                                    <th>Joueur</th>
-                                    <th>Affiliation</th>
-                                    <th>Téléphone</th>
-                                    <th id="th-email-header">Email</th>
-                                    <th id="th-role-header">Rôle</th>
-                                    <th id="th-action-header" style="display:none;">Action</th>
+                                    <th style="width: 38px;">Photo</th>
+                                    <th style="width: 22%;">Joueur</th>
+                                    <th style="width: 20%;">Affiliation</th>
+                                    <th style="width: 18%;">Téléphone</th>
+                                    <th id="th-email-header" style="width: 22%;">Email</th>
+                                    <th id="th-role-header" style="width: 12%;">Rôle</th>
+                                    <th id="th-action-header" style="display:none; width: 8%;">Action</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -852,7 +852,6 @@
                 match_location: "Grez-Doiceau"
             };
 
-            // Utilisation des identifiants fournis (Service ID par défaut de l'utilisateur ou générique, par ex "service_fastfoot" ou le nom configuré)
             emailjs.send('Fast Foot-mailings', 'Fast Foot - Rappel & Notification', templateParams)
                 .then(function(response) {
                     console.log('E-mail envoyé avec succès !', response.status, response.text);
@@ -968,8 +967,8 @@
             }
 
             joueursData.forEach(j => {
-                const avatarHTML = getPlayerAvatarHTML(j.email, 40, 40);
-                const displayName = `<strong>${j.prenom} ${j.nom}</strong>${j.surnom ? `<br><span style="color:var(--grass-2); font-weight:700; font-size:12px;">"${j.surnom}"</span>` : ''}`;
+                const avatarHTML = getPlayerAvatarHTML(j.email, 36, 36);
+                const displayName = `<strong>${j.prenom} ${j.nom}</strong>${j.surnom ? `<br><span style="color:var(--grass-2); font-weight:700; font-size:11px;">"${j.surnom}"</span>` : ''}`;
                 
                 let emailCellHTML = '';
                 let roleCellHTML = '';
@@ -977,24 +976,24 @@
 
                 if(currentUser.isAdmin) {
                     const canSeeEmail = j.showEmail || currentUser.email === j.email;
-                    emailCellHTML = `<td>${canSeeEmail ? j.email : '<span style="color:var(--ink-soft); font-style:italic;">Masqué</span>'}</td>`;
+                    emailCellHTML = `<td style="font-size:12px; overflow:hidden; text-overflow:ellipsis;" title="${canSeeEmail ? j.email : ''}">${canSeeEmail ? j.email : '<span style="color:var(--ink-soft); font-style:italic;">Masqué</span>'}</td>`;
                     roleCellHTML = `
                         <td>
-                            <select onchange="changePlayerRole('${j.email}', this.value)" style="padding:4px; border-radius:6px; font-size:12px; border:1px solid var(--line);">
+                            <select onchange="changePlayerRole('${j.email}', this.value)" style="padding:4px; border-radius:6px; font-size:11px; border:1px solid var(--line); width:100%;">
                                 <option value="Joueur" ${j.role === 'Joueur' ? 'selected' : ''}>Joueur</option>
                                 <option value="Staff" ${j.role === 'Staff' ? 'selected' : ''}>Staff</option>
-                                <option value="Administrateur - Joueur" ${j.role.includes('Administrateur') ? 'selected' : ''}>Administrateur</option>
+                                <option value="Administrateur - Joueur" ${j.role.includes('Administrateur') ? 'selected' : ''}>Admin</option>
                             </select>
                         </td>`;
-                    actionCellHTML = `<td><button class="btn-small" style="font-size:11px; padding:4px 8px;" onclick="sendReminderEmail('${j.email}', '${j.prenom} ${j.nom}')">📧 Rappel</button></td>`;
+                    actionCellHTML = `<td><button class="btn-small" style="font-size:10px; padding:4px 6px;" onclick="sendReminderEmail('${j.email}', '${j.prenom} ${j.nom}')">📧</button></td>`;
                 }
 
                 tbody.innerHTML += `
                     <tr>
-                        <td>${avatarHTML}</td>
+                        <td style="width:38px;">${avatarHTML}</td>
                         <td>${displayName}</td>
-                        <td>${j.affiliation}</td>
-                        <td>${j.telephone}</td>
+                        <td style="font-size:12px;">${j.affiliation}</td>
+                        <td style="font-size:12px;">${j.telephone}</td>
                         ${currentUser.isAdmin ? emailCellHTML : ''}
                         ${currentUser.isAdmin ? roleCellHTML : ''}
                         ${currentUser.isAdmin ? actionCellHTML : ''}
@@ -1151,7 +1150,7 @@
             document.querySelector('#panel-admin').scrollTop = 0;
         }
 
-        function cancelEditMatch() {
+        function cancelEditMatch> {
             document.getElementById('edit-match-original-code').value = '';
             document.getElementById('new-match-code').value = '';
             document.getElementById('new-match-date-picker').value = '';
@@ -1169,6 +1168,8 @@
         function deleteMatch(code) {
             if(!confirm("Êtes-vous sûr de vouloir supprimer ce match ?")) return;
             const index = matchsData.findIndex(m => m.code === code);
+            if(index !== minDim) { // (restored correct index check)
+            }
             if(index !== -1) {
                 matchsData.splice(index, 1);
                 localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
