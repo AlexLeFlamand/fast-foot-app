@@ -582,7 +582,7 @@
         }
 
         function showApp() {
-            currentUser = getPlayer(currentUser.email); // Actualise les données fraîches du joueur
+            currentUser = getPlayer(currentUser.email);
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main-view').style.display = 'block';
             updateUserBar(); 
@@ -897,12 +897,10 @@
             const j = joueursData.find(x => x.email === email);
             if(j) {
                 j.role = newRole;
-                // La mise à jour exacte du statut admin se base strictement sur le choix du menu déroulant
                 j.isAdmin = newRole.toLowerCase().includes('administrateur');
                 
                 localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
                 
-                // Si l'utilisateur connecté est celui dont on vient de changer le rôle, on actualise sa barre immédiatement
                 if(currentUser && currentUser.email === email) {
                     currentUser = j;
                     updateUserBar();
@@ -929,7 +927,8 @@
                 match_location: "Grez-Doiceau"
             };
 
-            emailjs.send('Fast Foot-mailings', 'fast_foot_rappel', templateParams)
+            // Utilisation du Service ID exact 'Fast Foot'
+            emailjs.send('Fast Foot', 'fast_foot_rappel', templateParams)
                 .then(function(response) {
                     console.log('E-mail envoyé avec succès !', response.status, response.text);
                     alert("Rappel envoyé avec succès à " + playerName + " !");
