@@ -133,7 +133,10 @@
         .panel { display: none; }
         .panel.active { display: block; }
 
+        .section-title { font-size: 18px; font-weight: 800; color: var(--pitch); margin: 24px 0 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; border-left: 4px solid var(--grass); padding-left: 10px; }
+
         .match-card { background: var(--paper); border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); border: 2px solid var(--line); position: relative; }
+        .match-card.highlight { border: 2px solid var(--grass); background: #ffffff; }
         .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 2px dashed var(--line); padding-bottom: 12px; flex-wrap: wrap; gap: 8px; }
         .match-date-badge { font-size: 18px; font-weight: 800; color: var(--pitch); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
         .match-date-badge span { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
@@ -270,6 +273,7 @@
             <!-- TAB 1: MATCHS -->
             <div id="panel-matches" class="panel active">
                 <a href="https://botroul.be/division_view.php?div=1&calendrier=" target="_blank" class="btn-primary" style="margin-bottom: 20px; display:block; text-align:center;">📊 Voir le Classement Officiel Botroul</a>
+                
                 <div id="matches-container"></div>
             </div>
 
@@ -609,40 +613,36 @@
             renderMatches();
         }
 
-        function renderMatches() {
-            const container = document.getElementById('matches-container'); container.innerHTML = '';
-            matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
+        function createMatchCardHTML(m, isHighlight=false) {
+            const presences = userPresences[m.code] || {};
+            let pList = [], uList = [], aList = [];
+            for(let email in presences) {
+                if(presences[email] === 'present') pList.push(email);
+                else if(presences[email] === 'uncertain') uList.push(email);
+                else if(presences[email] === 'absent') aList.push(email);
+            }
             
-            matchsData.forEach(m => {
-                const presences = userPresences[m.code] || {};
-                let pList = [], uList = [], aList = [];
-                for(let email in presences) {
-                    if(presences[email] === 'present') pList.push(email);
-                    else if(presences[email] === 'uncertain') uList.push(email);
-                    else if(presences[email] === 'absent') aList.push(email);
-                }
+            const stats = matchStats[m.code];
+            let scoreHTML = `<span class="vs">vs</span>`;
+            let statsHTML = '';
+            
+            if(stats && (stats.scoreFF !== "" || stats.scoreOpp !== "")) {
+                scoreHTML = m.isHome ? `<span class="score-display">${stats.scoreFF} - ${stats.scoreOpp}</span>` : `<span class="score-display">${stats.scoreOpp} - ${stats.scoreFF}</span>`;
                 
-                const stats = matchStats[m.code];
-                let scoreHTML = `<span class="vs">vs</span>`;
-                let statsHTML = '';
-                
-                if(stats && (stats.scoreFF !== "" || stats.scoreOpp !== "")) {
-                    scoreHTML = m.isHome ? `<span class="score-display">${stats.scoreFF} - ${stats.scoreOpp}</span>` : `<span class="score-display">${stats.scoreOpp} - ${stats.scoreFF}</span>`;
-                    
-                    if(stats.goals.length > 0 || stats.cards.length > 0 || stats.boulet) {
-                        statsHTML = `<div class="stats-summary">`;
-                        if(stats.goals.length>0) statsHTML += `<div>⚽ <strong>Buts:</strong> ${stats.goals.map(g => `${getPlayerName(g.scorer)} ${g.assist ? `(passe: ${getPlayerName(g.assist)})` : ''}`).join(', ')}</div>`;
-                        if(stats.cards.length>0) statsHTML += `<div>🟨🟥 <strong>Cartons:</strong> ${stats.cards.map(c => `${getPlayerName(c.player)} (${c.type})`).join(', ')}</div>`;
-                        if(stats.boulet) statsHTML += `<div>💩 <strong>Boulet:</strong> ${getPlayerName(stats.boulet)}</div>`;
-                        statsHTML += `</div>`;
-                    }
+                if(stats.goals.length > 0 || stats.cards.length > 0 || stats.boulet) {
+                    statsHTML = `<div class="stats-summary">`;
+                    if(stats.goals.length>0) statsHTML += `<div>⚽ <strong>Buts:</strong> ${stats.goals.map(g => `${getPlayerName(g.scorer)} ${g.assist ? `(passe: ${getPlayerName(g.assist)})` : ''}`).join(', ')}</div>`;
+                    if(stats.cards.length>0) statsHTML += `<div>🟨🟥 <strong>Cartons:</strong> ${stats.cards.map(c => `${getPlayerName(c.player)} (${c.type})`).join(', ')}</div>`;
+                    if(stats.boulet) statsHTML += `<div>💩 <strong>Boulet:</strong> ${getPlayerName(stats.boulet)}</div>`;
+                    statsHTML += `</div>`;
                 }
+            }
 
-                const cupBadge = m.code.startsWith('BAC') ? `<span class="location-tag tag-cup">🏆 Coupe Marcel Verhelst</span>` : `<span class="location-tag tag-champ">⚽ Championnat Botroul</span>`;
-                const myStatus = presences[currentUser.email];
-                
-                const card = document.createElement('div'); card.className = 'match-card';
-                card.innerHTML = `
+            const cupBadge = m.code.startsWith('BAC') ? `<span class="location-tag tag-cup">🏆 Coupe Marcel Verhelst</span>` : `<span class="location-tag tag-champ">⚽ Championnat Botroul</span>`;
+            const myStatus = presences[currentUser.email];
+            
+            return `
+                <div class="match-card ${isHighlight ? 'highlight' : ''}">
                     <div class="match-header">
                         <div class="match-date-badge">${m.date} <span>${m.dayOfWeek} • ${m.time}</span></div>
                         <div style="display:flex; gap:6px;">
@@ -678,9 +678,55 @@
                             </div>
                         </div>
                     </div>
-                `;
-                container.appendChild(card);
+                </div>
+            `;
+        }
+
+        function renderMatches() {
+            const container = document.getElementById('matches-container'); 
+            container.innerHTML = '';
+            
+            // Tri chronologique des matchs par date
+            matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
+            
+            // On détermine le "Match de la semaine" : le premier match dont le score n'est pas renseigné (ou le plus proche à venir)
+            let matchSemaineIdx = matchsData.findIndex(m => {
+                const st = matchStats[m.code];
+                return !st || (st.scoreFF === "" && st.scoreOpp === "");
             });
+
+            if(matchSemaineIdx === -1) matchSemaineIdx = 0;
+
+            // 1. DERNIER MATCH (S'il y a des matchs avant le match de la semaine)
+            if(matchSemaineIdx > 0) {
+                const dernierMatch = matchsData[matchSemaineIdx - 1];
+                container.innerHTML += `
+                    <div class="section-title">🏁 Dernier Match</div>
+                    ${createMatchCardHTML(dernierMatch, false)}
+                `;
+            }
+
+            // 2. MATCH DE LA SEMAINE (La priorité)
+            if(matchSemaineIdx < matchsData.length) {
+                const matchSemaine = matchsData[matchSemaineIdx];
+                container.innerHTML += `
+                    <div class="section-title" style="border-left-color: var(--red);">🔥 Match de la Semaine (Présences)</div>
+                    ${createMatchCardHTML(matchSemaine, true)}
+                `;
+            }
+
+            // 3. MATCHS À VENIR (La suite)
+            let othersHTML = '';
+            for(let i = matchSemaineIdx + 1; i < matchsData.length; i++) {
+                othersHTML += createMatchCardHTML(matchsData[i], false);
+            }
+
+            if(othersHTML) {
+                container.innerHTML += `
+                    <div class="section-title" style="border-left-color: var(--pitch);">📅 Matchs à venir</div>
+                    ${othersHTML}
+                `;
+            }
         }
 
         // --- GESTION DU PROFIL PERSONNEL ---
@@ -1150,10 +1196,6 @@
             document.getElementById('btn-cancel-edit').style.display = "inline-block";
             
             document.querySelector('#panel-admin').scrollTop = 0;
-        }
-
-        function cancelEditName() {
-            // fallback
         }
 
         function cancelEditMatch() {
