@@ -927,8 +927,8 @@
                 match_location: "Grez-Doiceau"
             };
 
-            // Utilisation directe avec la Public Key explicite pour forcer l'authentification EmailJS
-            emailjs.send('Fast Foot', 'qm5mjv9', templateParams, 'vmRWVlpoKy2Jf4I4f')
+            // Utilisation du vrai Template ID exact trouvé dans l'onglet Settings : "Fast Foot - Notification"
+            emailjs.send('Fast Foot', 'Fast Foot - Notification', templateParams, 'vmRWVlpoKy2Jf4I4f')
                 .then(function(response) {
                     console.log('E-mail envoyé avec succès !', response.status, response.text);
                     alert("Rappel envoyé avec succès à " + playerName + " !");
@@ -1193,7 +1193,7 @@
                 document.getElementById('new-match-address').value = '';
             }
 
-(matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01')));
+            matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
 
             localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
             renderMatches();
