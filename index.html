@@ -172,7 +172,7 @@
         .presence-voters-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; }
         .voters-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
-        .btn-admin-edit { background: var(--admin); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-transform: uppercase; float: right; }
+        .btn-admin-edit { background: var(--admin); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-transform: uppercase; float: right; margin-left: 6px; }
 
         .roster-card { background: var(--paper); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); border: 2px solid var(--line); margin-bottom: 20px;}
         .roster-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
@@ -672,7 +672,11 @@
                     <div class="teams-display">${m.dom} ${scoreHTML} ${m.ext}</div>
                     ${statsHTML}
                     <div class="match-meta"><div>📍 <strong>${m.location}</strong> (${m.address})</div></div>
-                    ${currentUser.isAdmin ? `<button class="btn-admin-edit" onclick="openMatchAdmin('${m.code}')">⚙️ Éditer Stats</button><div style="clear:both; margin-bottom:12px;"></div>` : ''}
+                    ${currentUser.isAdmin ? `
+                        <button class="btn-admin-edit" onclick="openMatchAdmin('${m.code}')">⚙️ Éditer Stats</button>
+                        <button class="btn-admin-edit" style="background:var(--grass); color:var(--pitch);" onclick="sendMatchRappelGlobal('${m.code}')">📢 Rappel Match</button>
+                        <div style="clear:both; margin-bottom:12px;"></div>
+                    ` : ''}
                     <div class="map-buttons">
                         <a href="https://waze.com/ul?q=${encodeURIComponent(m.address)}" target="_blank" class="btn-map">🚗 Waze</a>
                         <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.address)}" target="_blank" class="btn-map">🗺️ Google Maps</a>
@@ -917,17 +921,22 @@
                 return;
             }
 
+            // Récupère dynamiquement le prochain match non joué
+            let matchSemaine = matchsData.find(m => {
+                const st = matchStats[m.code];
+                return !st || (st.scoreFF === "" && st.scoreOpp === "");
+            }) || matchsData[0];
+
             let templateParams = {
                 email: playerEmail,
                 PLAYER_NAME: playerName,
-                subject_title: "Rappel de présence - Fast Foot",
-                message_body: "Ceci est un rappel amical pour te demander de bien vouloir indiquer ta présence sur l'application Fast Foot pour nos prochains matchs !",
-                match_date: "Prochain match",
-                match_time: "20h00",
-                match_location: "Grez-Doiceau"
+                subject_title: `Rappel de présence - ${matchSemaine.dom} vs ${matchSemaine.ext}`,
+                message_body: `Ceci est un rappel amical pour te demander de bien vouloir indiquer ta présence pour notre prochain match contre ${matchSemaine.ext} !`,
+                match_date: `${matchSemaine.date} (${matchSemaine.dayOfWeek})`,
+                match_time: matchSemaine.time,
+                match_location: `${matchSemaine.location} (${matchSemaine.address})`
             };
 
-            // Utilisation du vrai Template ID exact trouvé dans l'onglet Settings : "Fast Foot - Notification"
             emailjs.send('Fast Foot', 'Fast Foot - Notification', templateParams, 'vmRWVlpoKy2Jf4I4f')
                 .then(function(response) {
                     console.log('E-mail envoyé avec succès !', response.status, response.text);
@@ -936,6 +945,31 @@
                     console.error('Erreur lors de l\'envoi...', error);
                     alert("Erreur EmailJS : " + JSON.stringify(error));
                 });
+        }
+
+        // Fonction pour envoyer le rappel pour un match spécifique
+        function sendMatchRappelGlobal(matchCode) {
+            const m = matchsData.find(x => x.code === matchCode);
+            if(!m) return;
+            if(!confirm(`Envoyer un e-mail de rappel à tout l'effectif pour le match contre ${m.ext} (${m.date}) ?`)) return;
+
+            let count = 0;
+            joueursData.forEach(j => {
+                if(j.email) {
+                    let templateParams = {
+                        email: j.email,
+                        PLAYER_NAME: `${j.prenom} ${j.nom}`,
+                        subject_title: `Rappel de présence - ${m.dom} vs ${m.ext}`,
+                        message_body: `Ceci est un rappel pour notre match contre ${m.ext}. Merci d'indiquer ton statut sur l'application !`,
+                        match_date: `${m.date} (${m.dayOfWeek})`,
+                        match_time: m.time,
+                        match_location: `${m.location} (${m.address})`
+                    };
+                    emailjs.send('Fast Foot', 'Fast Foot - Notification', templateParams, 'vmRWVlpoKy2Jf4I4f');
+                    count++;
+                }
+            });
+            alert(`Rappels envoyés à ${count} joueurs pour le match ${m.code} !`);
         }
 
         let currentAdminMatch = null;
