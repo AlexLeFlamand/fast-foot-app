@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fast Foot – Calendrier & Présences Saison 2026/27</title>
+    
+    <!-- FAVICON & ICONES APP MOBILE -->
+    <link rel="icon" type="image/jpeg" href="Logo.jpeg">
+    <link rel="apple-touch-icon" href="Logo.jpeg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fast Foot">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -686,10 +694,8 @@
             const container = document.getElementById('matches-container'); 
             container.innerHTML = '';
             
-            // Tri chronologique des matchs par date
             matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
             
-            // On détermine le "Match de la semaine" : le premier match dont le score n'est pas renseigné (ou le plus proche à venir)
             let matchSemaineIdx = matchsData.findIndex(m => {
                 const st = matchStats[m.code];
                 return !st || (st.scoreFF === "" && st.scoreOpp === "");
@@ -697,7 +703,7 @@
 
             if(matchSemaineIdx === -1) matchSemaineIdx = 0;
 
-            // 1. DERNIER MATCH (S'il y a des matchs avant le match de la semaine)
+            // 1. DERNIER MATCH
             if(matchSemaineIdx > 0) {
                 const dernierMatch = matchsData[matchSemaineIdx - 1];
                 container.innerHTML += `
@@ -706,7 +712,7 @@
                 `;
             }
 
-            // 2. MATCH DE LA SEMAINE (La priorité)
+            // 2. MATCH DE LA SEMAINE
             if(matchSemaineIdx < matchsData.length) {
                 const matchSemaine = matchsData[matchSemaineIdx];
                 container.innerHTML += `
@@ -715,7 +721,7 @@
                 `;
             }
 
-            // 3. MATCHS À VENIR (La suite)
+            // 3. MATCHS À VENIR
             let othersHTML = '';
             for(let i = matchSemaineIdx + 1; i < matchsData.length; i++) {
                 othersHTML += createMatchCardHTML(matchsData[i], false);
