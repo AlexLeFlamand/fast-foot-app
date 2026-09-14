@@ -918,8 +918,8 @@
             }
 
             let templateParams = {
-                to_email: playerEmail,
-                player_name: playerName,
+                email: playerEmail, // Correspond au champ {{email}} attendu par le template EmailJS
+                PLAYER_NAME: playerName,
                 subject_title: "Rappel de présence - Fast Foot",
                 message_body: "Ceci est un rappel amical pour te demander de bien vouloir indiquer ta présence sur l'application Fast Foot pour nos prochains matchs !",
                 match_date: "Prochain match",
@@ -927,8 +927,8 @@
                 match_location: "Grez-Doiceau"
             };
 
-            // Utilisation du Service ID exact 'Fast Foot'
-            emailjs.send('Fast Foot', 'fast_foot_rappel', templateParams)
+            // Utilisation du Service ID 'Fast Foot' et du Template ID 'qm5mjv9'
+            emailjs.send('Fast Foot', 'qm5mjv9', templateParams)
                 .then(function(response) {
                     console.log('E-mail envoyé avec succès !', response.status, response.text);
                     alert("Rappel envoyé avec succès à " + playerName + " !");
