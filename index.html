@@ -918,7 +918,7 @@
             }
 
             let templateParams = {
-                email: playerEmail, // Correspond au champ {{email}} attendu par le template EmailJS
+                email: playerEmail,
                 PLAYER_NAME: playerName,
                 subject_title: "Rappel de présence - Fast Foot",
                 message_body: "Ceci est un rappel amical pour te demander de bien vouloir indiquer ta présence sur l'application Fast Foot pour nos prochains matchs !",
@@ -927,14 +927,14 @@
                 match_location: "Grez-Doiceau"
             };
 
-            // Utilisation du Service ID 'Fast Foot' et du Template ID 'qm5mjv9'
-            emailjs.send('Fast Foot', 'qm5mjv9', templateParams)
+            // Utilisation directe avec la Public Key explicite pour forcer l'authentification EmailJS
+            emailjs.send('Fast Foot', 'qm5mjv9', templateParams, 'vmRWVlpoKy2Jf4I4f')
                 .then(function(response) {
                     console.log('E-mail envoyé avec succès !', response.status, response.text);
                     alert("Rappel envoyé avec succès à " + playerName + " !");
                 }, function(error) {
                     console.error('Erreur lors de l\'envoi...', error);
-                    alert("Erreur lors de l'envoi de l'e-mail via EmailJS. Erreur : " + JSON.stringify(error));
+                    alert("Erreur EmailJS : " + JSON.stringify(error));
                 });
         }
 
@@ -1193,7 +1193,7 @@
                 document.getElementById('new-match-address').value = '';
             }
 
-            matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
+(matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01')));
 
             localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
             renderMatches();
