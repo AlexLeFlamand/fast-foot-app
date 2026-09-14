@@ -576,9 +576,20 @@
             }
 
             currentUser = targetPlayer;
+            // On sauvegarde l'email dans la session du navigateur (survécu aux rechargements F5, effacé à la fermeture de l'onglet/appli)
+            sessionStorage.setItem('ff_logged_user', currentUser.email);
+
+            showApp();
+        }
+
+        function showApp() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main-view').style.display = 'block';
-            updateUserBar(); renderMatches(); renderRoster(); renderRankings(); renderAdminMatchesList();
+            updateUserBar(); 
+            renderMatches(); 
+            renderRoster(); 
+            renderRankings(); 
+            renderAdminMatchesList();
         }
 
         function updateUserBar() {
@@ -599,6 +610,7 @@
 
         function handleLogout() {
             currentUser = null;
+            sessionStorage.removeItem('ff_logged_user');
             document.getElementById('app-main-view').style.display = 'none';
             document.getElementById('login-screen').style.display = 'block';
             initSelects();
@@ -865,6 +877,9 @@
                 joueursData.push(currentUser);
             }
             localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
+
+            // Mettre à jour la session active
+            sessionStorage.setItem('ff_logged_user', currentUser.email);
 
             closeProfileModal();
             updateUserBar();
@@ -1233,6 +1248,16 @@
         window.addEventListener('DOMContentLoaded', () => {
             initSelects();
             onLocationChange();
+
+            // Vérifie si une session active existe déjà dans l'onglet (résiste au F5 / rechargement)
+            const savedEmail = sessionStorage.getItem('ff_logged_user');
+            if(savedEmail) {
+                const foundPlayer = getPlayer(savedEmail);
+                if(foundPlayer) {
+                    currentUser = foundPlayer;
+                    showApp();
+                }
+            }
         });
     </script>
 </body>
