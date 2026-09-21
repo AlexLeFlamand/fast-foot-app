@@ -581,6 +581,27 @@
                 console.error("Erreur Firestore :", e);
             }
         };
+
+        // Écoute dynamique des stats de match sur Firestore
+        window.ecouterStatsFirestore = function() {
+            onSnapshot(collection(db, "matchStats"), (snapshot) => {
+                snapshot.forEach((doc) => {
+                    matchStats[doc.id] = doc.data();
+                });
+                localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
+                renderMatches();
+                renderRankings();
+            });
+        };
+
+        // Envoi des stats de match sur Firestore
+        window.saveMatchStatsFirestore = async function(code, statsData) {
+            try {
+                await setDoc(doc(db, "matchStats", code), statsData, { merge: true });
+            } catch (e) {
+                console.error("Erreur Firestore matchStats :", e);
+            }
+        };
     </script>
     <!-- ========================================== -->
 
@@ -679,6 +700,9 @@
             renderAdminMatchesList();
             if(typeof ecouterPresencesFirestore === 'function') {
                 ecouterPresencesFirestore();
+            }
+            if(typeof ecouterStatsFirestore === 'function') {
+                ecouterStatsFirestore();
             }
         }
 
@@ -1100,6 +1124,11 @@
             closeMatchAdminModal();
             renderMatches();
             renderRankings();
+
+            // Synchronisation sur Firestore
+            if(typeof window.saveMatchStatsFirestore === 'function') {
+                window.saveMatchStatsFirestore(currentAdminMatch, tempMatchStats);
+            }
         }
 
         function renderRankings() {
