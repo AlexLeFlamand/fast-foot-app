@@ -497,6 +497,89 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- INITIALISATION DE FIREBASE & LOGIQUE CLIENT -->
+    <!-- ========================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBD-Wr_IQEaK9IDT7UtanIZO2Xwu9Zp1Pw",
+            authDomain: "fastfoot-app.firebaseapp.com",
+            projectId: "fastfoot-app",
+            storageBucket: "fastfoot-app.firebasestorage.app",
+            messagingSenderId: "1046591481491",
+            appId: "1:1046591481491:web:4fe6fef5d1a5854ce4cf66"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        window.db = db;
+        window.auth = auth;
+
+        // Écouteur d'état de connexion (gère la session)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = joueursData.find(j => j.email === user.email) || { 
+                    prenom: "Joueur", nom: "Fast Foot", email: user.email, isAdmin: false, affiliation: "N/A", telephone: "" 
+                };
+                showApp();
+            } else {
+                document.getElementById('app-main-view').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'block';
+                initSelects();
+            }
+        });
+
+        // Connexion sécurisée avec Firebase Auth
+        window.handleLogin = async function() {
+            const selectedEmail = document.getElementById('login-select').value;
+            const enteredPassword = document.getElementById('login-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, selectedEmail, enteredPassword);
+            } catch (error) {
+                alert("Erreur de connexion : " + error.message);
+            }
+        };
+
+        // Déconnexion
+        window.handleLogout = async function() {
+            try {
+                await signOut(auth);
+                currentUser = null;
+            } catch (error) {
+                console.error("Erreur de déconnexion", error);
+            }
+        };
+
+        // Écoute dynamique des présences sur Firestore
+        window.ecouterPresencesFirestore = function() {
+            onSnapshot(collection(db, "presences"), (snapshot) => {
+                snapshot.forEach((doc) => {
+                    userPresences[doc.id] = doc.data();
+                });
+                renderMatches();
+            });
+        };
+
+        // Envoi d'une présence sur Firestore
+        window.setPresence = async function(code, status) {
+            if(!userPresences[code]) userPresences[code] = {};
+            userPresences[code][currentUser.email] = status;
+            renderMatches();
+            try {
+                await setDoc(doc(db, "presences", code), userPresences[code], { merge: true });
+            } catch (e) {
+                console.error("Erreur Firestore :", e);
+            }
+        };
+    </script>
+    <!-- ========================================== -->
+
     <script>
         let baseJoueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alex", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
         
@@ -563,26 +646,9 @@
             });
         }
 
-        function handleLogin() {
-            const selectedEmail = document.getElementById('login-select').value;
-            const enteredPassword = document.getElementById('login-password').value;
-            
-            const targetPlayer = getPlayer(selectedEmail);
-            const expectedPassword = userPasswords[selectedEmail] || 'fastfoot2026';
-
-            if(enteredPassword !== expectedPassword) {
-                alert("Mot de passe incorrect !");
-                return;
-            }
-
-            currentUser = targetPlayer;
-            sessionStorage.setItem('ff_logged_user', currentUser.email);
-
-            showApp();
-        }
-
         function showApp() {
-            currentUser = getPlayer(currentUser.email);
+            if(!currentUser) return;
+            currentUser = getPlayer(currentUser.email) || currentUser;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main-view').style.display = 'block';
             updateUserBar(); 
@@ -590,10 +656,13 @@
             renderRoster(); 
             renderRankings(); 
             renderAdminMatchesList();
+            if(typeof ecouterPresencesFirestore === 'function') {
+                ecouterPresencesFirestore();
+            }
         }
 
         function updateUserBar() {
-            currentUser = getPlayer(currentUser.email);
+            if(!currentUser) return;
             document.getElementById('user-profile-name').textContent = `${currentUser.prenom} ${currentUser.nom} ${currentUser.surnom ? `("${currentUser.surnom}")` : ''}`;
             document.getElementById('user-profile-email').textContent = currentUser.email;
             
@@ -608,14 +677,6 @@
             document.getElementById('tab-btn-admin').style.display = currentUser.isAdmin ? 'block' : 'none';
         }
 
-        function handleLogout() {
-            currentUser = null;
-            sessionStorage.removeItem('ff_logged_user');
-            document.getElementById('app-main-view').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'block';
-            initSelects();
-        }
-
         function switchTab(tabName) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -624,13 +685,6 @@
             if(tabName === 'stats') renderRankings();
             if(tabName === 'admin') renderAdminMatchesList();
             if(tabName === 'roster') renderRoster();
-        }
-
-        function setPresence(code, status) {
-            if(!userPresences[code]) userPresences[code] = {};
-            userPresences[code][currentUser.email] = status;
-            localStorage.setItem('ff_presences', JSON.stringify(userPresences));
-            renderMatches();
         }
 
         function createMatchCardHTML(m, isHighlight=false) {
@@ -659,7 +713,7 @@
             }
 
             const cupBadge = m.code.startsWith('BAC') ? `<span class="location-tag tag-cup">🏆 Coupe Marcel Verhelst</span>` : `<span class="location-tag tag-champ">⚽ Championnat Botroul</span>`;
-            const myStatus = presences[currentUser.email];
+            const myStatus = currentUser ? presences[currentUser.email] : null;
             
             return `
                 <div class="match-card ${isHighlight ? 'highlight' : ''}">
@@ -672,7 +726,7 @@
                     <div class="teams-display">${m.dom} ${scoreHTML} ${m.ext}</div>
                     ${statsHTML}
                     <div class="match-meta"><div>📍 <strong>${m.location}</strong> (${m.address})</div></div>
-                    ${currentUser.isAdmin ? `
+                    ${currentUser && currentUser.isAdmin ? `
                         <button class="btn-admin-edit" onclick="openMatchAdmin('${m.code}')">⚙️ Éditer Stats</button>
                         <button class="btn-admin-edit" style="background:var(--grass); color:var(--pitch);" onclick="sendMatchRappelGlobal('${m.code}')">📢 Rappel Match</button>
                         <div style="clear:both; margin-bottom:12px;"></div>
@@ -708,6 +762,7 @@
 
         function renderMatches() {
             const container = document.getElementById('matches-container'); 
+            if(!container) return;
             container.innerHTML = '';
             
             matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
@@ -719,7 +774,6 @@
 
             if(matchSemaineIdx === -1) matchSemaineIdx = 0;
 
-            // 1. DERNIER MATCH
             if(matchSemaineIdx > 0) {
                 const dernierMatch = matchsData[matchSemaineIdx - 1];
                 container.innerHTML += `
@@ -728,7 +782,6 @@
                 `;
             }
 
-            // 2. MATCH DE LA SEMAINE
             if(matchSemaineIdx < matchsData.length) {
                 const matchSemaine = matchsData[matchSemaineIdx];
                 container.innerHTML += `
@@ -737,7 +790,6 @@
                 `;
             }
 
-            // 3. MATCHS À VENIR
             let othersHTML = '';
             for(let i = matchSemaineIdx + 1; i < matchsData.length; i++) {
                 othersHTML += createMatchCardHTML(matchsData[i], false);
@@ -754,6 +806,7 @@
         // --- GESTION DU PROFIL PERSONNEL ---
         let tempImg = new Image();
         function openProfileModal() {
+            if(!currentUser) return;
             document.getElementById('profile-surnom').value = currentUser.surnom || '';
             document.getElementById('profile-email').value = currentUser.email || '';
             document.getElementById('profile-password').value = userPasswords[currentUser.email] || 'fastfoot2026';
@@ -812,13 +865,14 @@
         }
 
         function saveProfileChanges() {
+            if(!currentUser) return;
             const newEmail = document.getElementById('profile-email').value.trim();
             const newPassword = document.getElementById('profile-password').value.trim();
             const newSurnom = document.getElementById('profile-surnom').value.trim();
             const showEmail = document.getElementById('profile-show-email').checked;
 
             if(!newEmail) {
-                alert("L'adresse email est obligatoire pour recevoir les notifications de matchs et rappels de présence !");
+                alert("L'adresse email est obligatoire !");
                 return;
             }
 
@@ -846,25 +900,6 @@
                     }
                     localStorage.setItem('ff_presences', JSON.stringify(userPresences));
                 }
-
-                if(matchStats) {
-                    for(let code in matchStats) {
-                        let st = matchStats[code];
-                        if(st.boulet === oldEmail) st.boulet = newEmail;
-                        if(st.goals) {
-                            st.goals.forEach(g => {
-                                if(g.scorer === oldEmail) g.scorer = newEmail;
-                                if(g.assist === oldEmail) g.assist = newEmail;
-                            });
-                        }
-                        if(st.cards) {
-                            st.cards.forEach(c => {
-                                if(c.player === oldEmail) c.player = newEmail;
-                            });
-                        }
-                    }
-                    localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
-                }
             } else {
                 userAvatars[currentUser.email] = canvasData;
             }
@@ -882,14 +917,12 @@
             }
             localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
 
-            sessionStorage.setItem('ff_logged_user', currentUser.email);
-
             closeProfileModal();
             updateUserBar();
             initSelects();
             renderRoster();
             renderMatches();
-            alert("Profil mis à jour avec succès ! Vos paramètres d'e-mail pour les notifications sont enregistrés.");
+            alert("Profil mis à jour avec succès !");
         }
 
         function closeProfileModal() { 
@@ -902,14 +935,11 @@
             if(j) {
                 j.role = newRole;
                 j.isAdmin = newRole.toLowerCase().includes('administrateur');
-                
                 localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
-                
                 if(currentUser && currentUser.email === email) {
                     currentUser = j;
                     updateUserBar();
                 }
-                
                 renderRoster();
             }
         }
@@ -921,7 +951,6 @@
                 return;
             }
 
-            // Récupère dynamiquement le prochain match non joué
             let matchSemaine = matchsData.find(m => {
                 const st = matchStats[m.code];
                 return !st || (st.scoreFF === "" && st.scoreOpp === "");
@@ -939,15 +968,12 @@
 
             emailjs.send('Fast Foot', 'Fast Foot - Notification', templateParams, 'vmRWVlpoKy2Jf4I4f')
                 .then(function(response) {
-                    console.log('E-mail envoyé avec succès !', response.status, response.text);
                     alert("Rappel envoyé avec succès à " + playerName + " !");
                 }, function(error) {
-                    console.error('Erreur lors de l\'envoi...', error);
                     alert("Erreur EmailJS : " + JSON.stringify(error));
                 });
         }
 
-        // Fonction pour envoyer le rappel pour un match spécifique
         function sendMatchRappelGlobal(matchCode) {
             const m = matchsData.find(x => x.code === matchCode);
             if(!m) return;
@@ -969,7 +995,7 @@
                     count++;
                 }
             });
-            alert(`Rappels envoyés à ${count} joueurs pour le match ${m.code} !`);
+            alert(`Rappels envoyés à ${count} joueurs !`);
         }
 
         let currentAdminMatch = null;
@@ -1007,11 +1033,11 @@
         function removeCard(idx) { tempMatchStats.cards.splice(idx, 1); refreshAdminLists(); }
 
         function refreshAdminLists() {
-            const gl = document.getElementById('list-goals'); gl.innerHTML = '';
+            const gl = document.getElementById('list-goals'); if(!gl) return; gl.innerHTML = '';
             tempMatchStats.goals.forEach((g, i) => {
                 gl.innerHTML += `<li><span>⚽ ${getPlayerName(g.scorer)} ${g.assist ? `(Passe: ${getPlayerName(g.assist)})` : ''}</span> <span onclick="removeGoal(${i})" style="cursor:pointer; color:red; font-weight:bold; padding:0 6px;">❌</span></li>`;
             });
-            const cl = document.getElementById('list-cards'); cl.innerHTML = '';
+            const cl = document.getElementById('list-cards'); if(!cl) return; cl.innerHTML = '';
             tempMatchStats.cards.forEach((c, i) => {
                 cl.innerHTML += `<li><span>${c.type==='jaune'?'🟨':'🟥'} ${getPlayerName(c.player)}</span> <span onclick="removeCard(${i})" style="cursor:pointer; color:red; font-weight:bold; padding:0 6px;">❌</span></li>`;
             });
@@ -1044,7 +1070,7 @@
             });
 
             const drawTable = (id, dataObj, formatFn) => {
-                const tbody = document.querySelector(`#${id} tbody`); tbody.innerHTML = '';
+                const tbody = document.querySelector(`#${id} tbody`); if(!tbody) return; tbody.innerHTML = '';
                 const sorted = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
                 if(sorted.length===0) tbody.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucune donnée</td></tr>`;
                 sorted.forEach(([email, val]) => { tbody.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${formatFn(val)}</td></tr>`; });
@@ -1054,26 +1080,29 @@
             drawTable('table-passeurs', passeurs, v => `<strong>${v}</strong> passe(s)`);
             drawTable('table-boulets', boulets, v => `<strong>${v}</strong> fois`);
             
-            const tbodyC = document.querySelector(`#table-cartons tbody`); tbodyC.innerHTML = '';
-            const sortedC = Object.entries(cartons).sort((a,b) => (b[1].r*3 + b[1].j) - (a[1].r*3 + a[1].j));
-            if(sortedC.length===0) tbodyC.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucun carton</td></tr>`;
-            sortedC.forEach(([email, val]) => { tbodyC.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${val.j} 🟨 / ${val.r} 🟥</td></tr>`; });
+            const tbodyC = document.querySelector(`#table-cartons tbody`); 
+            if(tbodyC) {
+                tbodyC.innerHTML = '';
+                const sortedC = Object.entries(cartons).sort((a,b) => (b[1].r*3 + b[1].j) - (a[1].r*3 + a[1].j));
+                if(sortedC.length===0) tbodyC.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucun carton</td></tr>`;
+                sortedC.forEach(([email, val]) => { tbodyC.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${val.j} 🟨 / ${val.r} 🟥</td></tr>`; });
+            }
         }
 
         function renderRoster() {
-            const tbody = document.querySelector('#roster-table-el tbody'); tbody.innerHTML = '';
+            const tbody = document.querySelector('#roster-table-el tbody'); if(!tbody) return; tbody.innerHTML = '';
             const thEmail = document.getElementById('th-email-header');
             const thRole = document.getElementById('th-role-header');
             const thAction = document.getElementById('th-action-header');
             
-            if(currentUser.isAdmin) {
-                thEmail.style.display = '';
-                thRole.style.display = '';
-                thAction.style.display = '';
+            if(currentUser && currentUser.isAdmin) {
+                if(thEmail) thEmail.style.display = '';
+                if(thRole) thRole.style.display = '';
+                if(thAction) thAction.style.display = '';
             } else {
-                thEmail.style.display = 'none';
-                thRole.style.display = 'none';
-                thAction.style.display = 'none';
+                if(thEmail) thEmail.style.display = 'none';
+                if(thRole) thRole.style.display = 'none';
+                if(thAction) thAction.style.display = 'none';
             }
 
             joueursData.forEach(j => {
@@ -1084,7 +1113,7 @@
                 let roleCellHTML = '';
                 let actionCellHTML = '';
 
-                if(currentUser.isAdmin) {
+                if(currentUser && currentUser.isAdmin) {
                     const canSeeEmail = j.showEmail || currentUser.email === j.email;
                     emailCellHTML = `<td>${canSeeEmail ? j.email : '<span style="color:var(--ink-soft); font-style:italic;">Masqué</span>'}</td>`;
                     roleCellHTML = `
@@ -1104,9 +1133,9 @@
                         <td>${displayName}</td>
                         <td>${j.affiliation}</td>
                         <td>${j.telephone}</td>
-                        ${currentUser.isAdmin ? emailCellHTML : ''}
-                        ${currentUser.isAdmin ? roleCellHTML : ''}
-                        ${currentUser.isAdmin ? actionCellHTML : ''}
+                        ${currentUser && currentUser.isAdmin ? emailCellHTML : ''}
+                        ${currentUser && currentUser.isAdmin ? roleCellHTML : ''}
+                        ${currentUser && currentUser.isAdmin ? actionCellHTML : ''}
                     </tr>
                 `;
             });
@@ -1143,6 +1172,7 @@
         function onLocationChange() {
             const sel = document.getElementById('new-match-location-select').value;
             const addrInput = document.getElementById('new-match-address');
+            if(!addrInput) return;
             if(sallesConfig[sel]) {
                 addrInput.value = sallesConfig[sel];
             } else {
@@ -1257,7 +1287,8 @@
             document.getElementById('btn-save-match').textContent = "Mettre à jour le match";
             document.getElementById('btn-cancel-edit').style.display = "inline-block";
             
-            document.querySelector('#panel-admin').scrollTop = 0;
+            const panelAdmin = document.querySelector('#panel-admin');
+            if(panelAdmin) panelAdmin.scrollTop = 0;
         }
 
         function cancelEditMatch() {
@@ -1289,15 +1320,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             initSelects();
             onLocationChange();
-
-            const savedEmail = sessionStorage.getItem('ff_logged_user');
-            if(savedEmail) {
-                const foundPlayer = getPlayer(savedEmail);
-                if(foundPlayer) {
-                    currentUser = foundPlayer;
-                    showApp();
-                }
-            }
         });
     </script>
 </body>
