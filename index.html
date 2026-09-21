@@ -245,7 +245,7 @@
             </div>
             <div class="form-group">
                 <label>Mot de passe</label>
-                <input type="password" id="login-password" value="fastfoot2026" placeholder="Mot de passe">
+                <input type="password" id="login-password" value="Fastfoot2026" placeholder="Mot de passe">
             </div>
             <button class="btn-primary" onclick="handleLogin()">Se Connecter</button>
         </div>
@@ -585,7 +585,24 @@
     <!-- ========================================== -->
 
     <script>
-        let baseJoueursData = [{"prenom": "Mohammed", "nom": "Amri", "email": "mohammed.amri@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"}, {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"}, {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff  - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"}, {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"}, {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"}, {"prenom": "Teddy", "nom": "Demolin", "email": "teddy.demolin@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"}, {"prenom": "Dos Santos", "nom": "Hugo", "email": "dos santos.hugo@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"}, {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"}, {"prenom": "Jéremy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"}, {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"}, {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"}, {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"}, {"prenom": "Laszlo", "nom": "Somerling", "email": "laszlo.somerling@fastfoot.be", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"}, {"prenom": "Alex", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"}, {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"}, {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}];
+        let baseJoueursData = [
+            {"prenom": "Mohammed", "nom": "Amri", "email": "mohammedamri527@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "020508D036", "telephone": "32489330917"},
+            {"prenom": "Larry", "nom": "Ancart", "email": "larryancart@gmail.com", "role": "Staff", "isAdmin": false, "affiliation": "811207A462", "telephone": "32472827169"},
+            {"prenom": "Pierre", "nom": "Ancart", "email": "pierre.ancart@gmail.com", "role": "Administrateur - Staff - Joueur", "isAdmin": true, "affiliation": "920306A463", "telephone": "32472640473"},
+            {"prenom": "Bertrand", "nom": "Courard", "email": "bert_courard@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921011A465", "telephone": "32478512658"},
+            {"prenom": "Axel", "nom": "Delvaux", "email": "axel_delvaux10@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "930712B313", "telephone": "32477590011"},
+            {"prenom": "Teddy", "nom": "Demolin", "email": "demolin.ted@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "960307D033", "telephone": "32491980264"},
+            {"prenom": "Dos Santos", "nom": "Hugo", "email": "hugodsc.jardin@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "020417C342", "telephone": "32471083969"},
+            {"prenom": "Grégory", "nom": "Lefebvre", "email": "lefgregory@hotmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "980625B380", "telephone": "32479199246"},
+            {"prenom": "Jérémy", "nom": "Lefebvre", "email": "jeremlefebvre22@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "961205A568", "telephone": "32472087245"},
+            {"prenom": "Adrian", "nom": "Lucas", "email": "adrilucaskine@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "950628C065", "telephone": "32498165137"},
+            {"prenom": "Julien", "nom": "Sadon", "email": "juliensadon96@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "961016B626", "telephone": "32471961610"},
+            {"prenom": "Franck", "nom": "Schildermans", "email": "francky1300.fs@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "940718A480", "telephone": "32478570631"},
+            {"prenom": "Laszlo", "nom": "Somerling", "email": "somerlinglaszlo@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "030619D034", "telephone": "32470487430"},
+            {"prenom": "Alexandre", "nom": "Spletinckx", "email": "alex.spletinckx@gmail.com", "role": "Administrateur - Joueur", "isAdmin": true, "affiliation": "920414B489", "telephone": "32494948885"},
+            {"prenom": "Will", "nom": "Still", "email": "w.still14@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "921014B471", "telephone": "32498136659"},
+            {"prenom": "Guillaume", "nom": "Tournay", "email": "tournaygui@gmail.com", "role": "Joueur", "isAdmin": false, "affiliation": "990409C156", "telephone": "32479965885"}
+        ];
         
         let joueursData = JSON.parse(localStorage.getItem('ff_joueurs_custom') || 'null') || baseJoueursData;
         let userPasswords = JSON.parse(localStorage.getItem('ff_user_passwords') || '{}');
@@ -813,7 +830,7 @@
             if(!currentUser) return;
             document.getElementById('profile-surnom').value = currentUser.surnom || '';
             document.getElementById('profile-email').value = currentUser.email || '';
-            document.getElementById('profile-password').value = userPasswords[currentUser.email] || 'fastfoot2026';
+            document.getElementById('profile-password').value = userPasswords[currentUser.email] || 'Fastfoot2026';
             document.getElementById('profile-show-email').checked = currentUser.showEmail !== undefined ? currentUser.showEmail : false;
             
             const existingAvatar = userAvatars[currentUser.email];
