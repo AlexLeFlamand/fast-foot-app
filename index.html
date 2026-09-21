@@ -997,9 +997,16 @@
                 
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
+                    let swRegistration = null;
+                    if ('serviceWorker' in navigator) {
+                        swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                    }
+
                     const currentToken = await getToken(messaging, {
-                        vapidKey: "BN3yR7k1N7UciidBrgasdhVc6Yx64CoPHaGK7kAc2OZaSJNN1HN4_kW44sXhrFgqw2ePKwU7X9IqMGfYfk0RZ94"
+                        vapidKey: "BN3yR7k1N7UciidBrgasdhVc6Yx64CoPHaGK7kAc2OZaSJNN1HN4_kW44sXhrFgqw2ePKwU7X9IqMGfYfk0RZ94",
+                        serviceWorkerRegistration: swRegistration
                     });
+
                     if (currentToken) {
                         console.log("Jeton de notification obtenu :", currentToken);
                         alert("Notifications push activées avec succès !");
@@ -1012,7 +1019,7 @@
                 }
             } catch (error) {
                 console.error("Erreur lors de l'activation des notifications :", error);
-                alert("Erreur lors de l'activation des notifications.");
+                alert("Erreur lors de l'activation des notifications : " + error.message);
             }
         }
 
@@ -1125,7 +1132,6 @@
             renderMatches();
             renderRankings();
 
-            // Synchronisation sur Firestore
             if(typeof window.saveMatchStatsFirestore === 'function') {
                 window.saveMatchStatsFirestore(currentAdminMatch, tempMatchStats);
             }
