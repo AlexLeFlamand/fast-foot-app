@@ -172,7 +172,6 @@
         .presence-voters-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; }
         .voters-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
-        /* CSS corrigé pour les boutons admin (suppression du float) */
         .btn-admin-edit { background: var(--admin); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         .admin-actions-container { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 16px; margin-top: 8px; flex-wrap: wrap; }
 
@@ -192,7 +191,7 @@
             .match-card { padding: 16px; }
             .map-buttons { grid-template-columns: 1fr; }
             .presence-buttons { grid-template-columns: 1fr; }
-            .admin-actions-container { justify-content: flex-start; } /* Les boutons s'alignent à gauche sur petit écran pour ne pas déborder */
+            .admin-actions-container { justify-content: flex-start; }
         }
 
         @media(max-width: 480px) {
@@ -284,7 +283,6 @@
             <!-- TAB 1: MATCHS -->
             <div id="panel-matches" class="panel active">
                 <a href="https://botroul.be/division_view.php?div=1&calendrier=" target="_blank" class="btn-primary" style="margin-bottom: 20px; display:block; text-align:center;">📊 Voir le Classement Officiel Botroul</a>
-                
                 <div id="matches-container"></div>
             </div>
 
@@ -392,6 +390,13 @@
                                 <tbody id="admin-matches-tbody"></tbody>
                             </table>
                         </div>
+                    </div>
+                    
+                    <!-- BOUTON POUR NETTOYER LES VOTES FANTOMES -->
+                    <div style="background: white; padding: 16px; border-radius: 12px; border: 2px solid var(--line); margin-top: 20px;">
+                        <h4 style="margin: 0 0 12px; color: var(--pitch);">🛠️ Maintenance du système</h4>
+                        <p style="font-size: 13px; color: var(--ink-soft); margin-bottom: 12px;">Si vous voyez des pastilles "FF" dans les présences, cela provient d'anciens tests sauvegardés dans la mémoire de votre appareil. Cliquez ci-dessous pour nettoyer ces fantômes.</p>
+                        <button class="btn-primary" style="background: var(--uncertain); color: white; width: auto;" onclick="cleanGhostVotes()">🧹 Nettoyer les votes fantômes (FF)</button>
                     </div>
                 </div>
             </div>
@@ -535,7 +540,6 @@
             return name;
         }
 
-        // Correction pour le bug des avatars "FF" 
         function getPlayerAvatarHTML(email, width=28, height=28) {
             const j = getPlayer(email);
             
@@ -543,7 +547,7 @@
             if (j && j.prenom && j.nom) {
                 initials = `${j.prenom[0]}${j.nom[0]}`.toUpperCase();
             } else if (email && email.includes('@')) {
-                initials = email.substring(0, 2).toUpperCase(); // Essaye d'extraire de l'email si la base de données est corrompue
+                initials = email.substring(0, 2).toUpperCase();
             }
 
             const img = userAvatars[email];
@@ -557,14 +561,16 @@
         function initSelects() {
             const selectEl = document.getElementById('login-select');
             if(!selectEl) return;
-            selectEl.innerHTML = '';
+            
+            // CORRECTION: Demander de choisir, plus de sélection par défaut sur Alex !
+            selectEl.innerHTML = '<option value="" disabled selected>-- Sélectionnez votre profil --</option>';
+            
             const playerSelects = document.querySelectorAll('.player-select');
             playerSelects.forEach(sel => sel.innerHTML = '<option value="">-- Choisir --</option>');
 
             joueursData.forEach((j) => {
                 const opt = document.createElement('option'); opt.value = j.email; opt.textContent = `${j.prenom} ${j.nom} ${j.surnom ? `("${j.surnom}")` : ''}`;
                 if(currentUser && j.email === currentUser.email) opt.selected = true;
-                else if(!currentUser && j.email === 'alex.spletinckx@gmail.com') opt.selected = true;
                 selectEl.appendChild(opt);
                 
                 playerSelects.forEach(sel => {
@@ -574,9 +580,12 @@
             });
         }
 
-        // Correction pour le vol d'identité de profil (LocalStorage Sync)
         function handleLogin() {
             const selectedEmail = document.getElementById('login-select').value;
+            if (!selectedEmail) {
+                alert("Veuillez sélectionner votre profil dans la liste !");
+                return;
+            }
             const enteredPassword = document.getElementById('login-password').value;
             
             const targetPlayer = getPlayer(selectedEmail);
@@ -592,7 +601,6 @@
                 return;
             }
 
-            // Copie propre et fraîche des données pour ne pas écraser les autres
             currentUser = JSON.parse(JSON.stringify(targetPlayer));
             sessionStorage.setItem('ff_logged_user', currentUser.email);
 
@@ -600,7 +608,6 @@
         }
 
         function showApp() {
-            // S'assure que l'on charge bien depuis la liste des joueurs et non une vieille session corrompue
             const savedEmail = sessionStorage.getItem('ff_logged_user');
             if (savedEmail) {
                 currentUser = getPlayer(savedEmail) || joueursData[0];
@@ -686,7 +693,6 @@
             const cupBadge = m.code.startsWith('BAC') ? `<span class="location-tag tag-cup">🏆 Coupe Marcel Verhelst</span>` : `<span class="location-tag tag-champ">⚽ Championnat Botroul</span>`;
             const myStatus = presences[currentUser.email];
             
-            // Les boutons Admin sont maintenant dans une div Flexbox ".admin-actions-container" (CSS en haut)
             return `
                 <div class="match-card ${isHighlight ? 'highlight' : ''}">
                     <div class="match-header">
@@ -950,7 +956,6 @@
                 return;
             }
 
-            // Récupère dynamiquement le prochain match non joué
             let matchSemaine = matchsData.find(m => {
                 const st = matchStats[m.code];
                 return !st || (st.scoreFF === "" && st.scoreOpp === "");
@@ -976,7 +981,6 @@
                 });
         }
 
-        // Fonction pour envoyer le rappel pour un match spécifique
         function sendMatchRappelGlobal(matchCode) {
             const m = matchsData.find(x => x.code === matchCode);
             if(!m) return;
@@ -1313,6 +1317,22 @@
                 renderMatches();
                 renderAdminMatchesList();
             }
+        }
+        
+        // --- FONCTION DE NETTOYAGE DES VOTES FANTOMES (FF) ---
+        function cleanGhostVotes() {
+            let count = 0;
+            for(let code in userPresences) {
+                for(let email in userPresences[code]) {
+                    if(!getPlayer(email)) {
+                        delete userPresences[code][email];
+                        count++;
+                    }
+                }
+            }
+            localStorage.setItem('ff_presences', JSON.stringify(userPresences));
+            renderMatches();
+            alert(`Nettoyage terminé ! ${count} vote(s) fantôme(s) supprimé(s).`);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
