@@ -29,7 +29,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Configuration Firebase officielle de Fast Foot App
         const firebaseConfig = {
             apiKey: "AIzaSyBD-Wr_IQeAk9IDT7UtanIZO2Xwu9Zp1Pw",
             authDomain: "fastfoot-app.firebaseapp.com",
@@ -626,44 +625,35 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main-view').style.display = 'block';
             updateUserBar(); 
-            loadDataFromCloud(); // Synchronisation Firebase
+            
+            renderMatches(); 
             renderRoster(); 
             renderRankings(); 
             renderAdminMatchesList();
+
+            // Chargement direct depuis la collection Firebase "presences"
+            loadPresencesFromCloud();
         }
 
-        // --- SYNCHRONISATION FIRESTORE CLOUD ---
-        function saveDataToCloud() {
-            db.collection("fastfoot").doc("app_data").set({
-                presences: userPresences,
-                avatars: userAvatars,
-                matchStats: matchStats,
-                customMatchs: matchsData,
-                joueurs: joueursData
-            }).catch(error => console.error("Erreur sync Cloud : ", error));
+        // --- SYNCHRONISATION FIRESTORE CORRIGÉE (COLLECTION PRESENCES) ---
+        function savePresenceToCloud(code, presencesObj) {
+            db.collection("presences").doc(code).set(presencesObj, { merge: true })
+              .catch(error => console.error("Erreur sync présence : ", error));
         }
 
-        function loadDataFromCloud() {
-            db.collection("fastfoot").doc("app_data").get().then((doc) => {
-                if (doc.exists) {
+        function loadPresencesFromCloud() {
+            db.collection("presences").get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const code = doc.id;
                     const data = doc.data();
-                    if(data.presences) userPresences = data.presences;
-                    if(data.avatars) userAvatars = data.avatars;
-                    if(data.matchStats) matchStats = data.matchStats;
-                    if(data.customMatchs) matchsData = data.customMatchs;
-                    if(data.joueurs) joueursData = data.joueurs;
-                    
-                    localStorage.setItem('ff_presences', JSON.stringify(userPresences));
-                    localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
-                    localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
-                    
-                    renderMatches();
-                    renderRoster();
-                    renderRankings();
-                }
-            }).catch((error) => {
-                console.log("Chargement local de secours (hors-ligne)");
+                    if(data) {
+                        userPresences[code] = data;
+                    }
+                });
+                localStorage.setItem('ff_presences', JSON.stringify(userPresences));
                 renderMatches();
+            }).catch((error) => {
+                console.log("Erreur chargement cloud, utilisation locale.");
             });
         }
 
@@ -707,7 +697,10 @@
             if(!userPresences[code]) userPresences[code] = {};
             userPresences[code][currentUser.email] = status;
             localStorage.setItem('ff_presences', JSON.stringify(userPresences));
-            saveDataToCloud(); // Enregistrement instantané Cloud
+            
+            // Envoi immédiat dans la collection "presences" de Firebase
+            savePresenceToCloud(code, userPresences[code]);
+            
             renderMatches();
         }
 
@@ -915,17 +908,6 @@
             if(oldEmail !== newEmail) {
                 userAvatars[newEmail] = userAvatars[oldEmail] || canvasData;
                 delete userAvatars[oldEmail];
-                
-                if(userPresences) {
-                    for(let code in userPresences) {
-                        if(userPresences[code][oldEmail] !== undefined) {
-                            userPresences[code][newEmail] = userPresences[code][oldEmail];
-                            delete userPresences[code][oldEmail];
-                        }
-                    }
-                }
-            } else {
-                userAvatars[currentUser.email] = canvasData;
             }
             
             userAvatars[currentUser.email] = canvasData;
@@ -943,8 +925,6 @@
             localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
             localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
             sessionStorage.setItem('ff_logged_user', currentUser.email);
-
-            saveDataToCloud(); // Synchronisation Cloud de l'avatar et du profil
 
             closeProfileModal();
             updateUserBar();
@@ -964,9 +944,7 @@
             if(j) {
                 j.role = newRole;
                 j.isAdmin = newRole.toLowerCase().includes('administrateur');
-                
                 localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
-                saveDataToCloud();
                 
                 if(currentUser && currentUser.email === email) {
                     currentUser = j;
@@ -1080,7 +1058,6 @@
             
             matchStats[currentAdminMatch] = tempMatchStats;
             localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
-            saveDataToCloud();
             closeMatchAdminModal();
             renderMatches();
             renderRankings();
@@ -1278,9 +1255,7 @@
             }
 
             matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
-
             localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
-            saveDataToCloud();
             renderMatches();
             renderAdminMatchesList();
         }
@@ -1332,7 +1307,6 @@
             if(index !== -1) {
                 matchsData.splice(index, 1);
                 localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
-                saveDataToCloud();
                 renderMatches();
                 renderAdminMatchesList();
             }
