@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- SDK EmailJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -22,6 +23,25 @@
           emailjs.init("vmRWVlpoKy2Jf4I4f");
        })();
     </script>
+
+    <!-- SDK Firebase (App & Firestore Database) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Configuration Firebase officielle de Fast Foot App
+        const firebaseConfig = {
+            apiKey: "AIzaSyBD-Wr_IQeAk9IDT7UtanIZO2Xwu9Zp1Pw",
+            authDomain: "fastfoot-app.firebaseapp.com",
+            projectId: "fastfoot-app",
+            storageBucket: "fastfoot-app.appspot.com",
+            messagingSenderId: "1046591481491",
+            appId: "1:1046591481491:web:4fe6fef5d1a5854ce4cf66"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
     <style>
         :root{
             --pitch: #0F2E24;
@@ -391,13 +411,6 @@
                             </table>
                         </div>
                     </div>
-                    
-                    <!-- BOUTON POUR NETTOYER LES VOTES FANTOMES -->
-                    <div style="background: white; padding: 16px; border-radius: 12px; border: 2px solid var(--line); margin-top: 20px;">
-                        <h4 style="margin: 0 0 12px; color: var(--pitch);">🛠️ Maintenance du système</h4>
-                        <p style="font-size: 13px; color: var(--ink-soft); margin-bottom: 12px;">Si vous voyez des pastilles "FF" dans les présences, cela provient d'anciens tests sauvegardés dans la mémoire de votre appareil. Cliquez ci-dessous pour nettoyer ces fantômes.</p>
-                        <button class="btn-primary" style="background: var(--uncertain); color: white; width: auto;" onclick="cleanGhostVotes()">🧹 Nettoyer les votes fantômes (FF)</button>
-                    </div>
                 </div>
             </div>
 
@@ -542,7 +555,6 @@
 
         function getPlayerAvatarHTML(email, width=28, height=28) {
             const j = getPlayer(email);
-            
             let initials = 'FF';
             if (j && j.prenom && j.nom) {
                 initials = `${j.prenom[0]}${j.nom[0]}`.toUpperCase();
@@ -561,8 +573,6 @@
         function initSelects() {
             const selectEl = document.getElementById('login-select');
             if(!selectEl) return;
-            
-            // CORRECTION: Demander de choisir, plus de sélection par défaut sur Alex !
             selectEl.innerHTML = '<option value="" disabled selected>-- Sélectionnez votre profil --</option>';
             
             const playerSelects = document.querySelectorAll('.player-select');
@@ -616,10 +626,45 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main-view').style.display = 'block';
             updateUserBar(); 
-            renderMatches(); 
+            loadDataFromCloud(); // Synchronisation Firebase
             renderRoster(); 
             renderRankings(); 
             renderAdminMatchesList();
+        }
+
+        // --- SYNCHRONISATION FIRESTORE CLOUD ---
+        function saveDataToCloud() {
+            db.collection("fastfoot").doc("app_data").set({
+                presences: userPresences,
+                avatars: userAvatars,
+                matchStats: matchStats,
+                customMatchs: matchsData,
+                joueurs: joueursData
+            }).catch(error => console.error("Erreur sync Cloud : ", error));
+        }
+
+        function loadDataFromCloud() {
+            db.collection("fastfoot").doc("app_data").get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if(data.presences) userPresences = data.presences;
+                    if(data.avatars) userAvatars = data.avatars;
+                    if(data.matchStats) matchStats = data.matchStats;
+                    if(data.customMatchs) matchsData = data.customMatchs;
+                    if(data.joueurs) joueursData = data.joueurs;
+                    
+                    localStorage.setItem('ff_presences', JSON.stringify(userPresences));
+                    localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
+                    localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
+                    
+                    renderMatches();
+                    renderRoster();
+                    renderRankings();
+                }
+            }).catch((error) => {
+                console.log("Chargement local de secours (hors-ligne)");
+                renderMatches();
+            });
         }
 
         function updateUserBar() {
@@ -662,6 +707,7 @@
             if(!userPresences[code]) userPresences[code] = {};
             userPresences[code][currentUser.email] = status;
             localStorage.setItem('ff_presences', JSON.stringify(userPresences));
+            saveDataToCloud(); // Enregistrement instantané Cloud
             renderMatches();
         }
 
@@ -743,6 +789,7 @@
 
         function renderMatches() {
             const container = document.getElementById('matches-container'); 
+            if(!container) return;
             container.innerHTML = '';
             
             matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
@@ -754,7 +801,6 @@
 
             if(matchSemaineIdx === -1) matchSemaineIdx = 0;
 
-            // 1. DERNIER MATCH
             if(matchSemaineIdx > 0) {
                 const dernierMatch = matchsData[matchSemaineIdx - 1];
                 container.innerHTML += `
@@ -763,7 +809,6 @@
                 `;
             }
 
-            // 2. MATCH DE LA SEMAINE
             if(matchSemaineIdx < matchsData.length) {
                 const matchSemaine = matchsData[matchSemaineIdx];
                 container.innerHTML += `
@@ -772,7 +817,6 @@
                 `;
             }
 
-            // 3. MATCHS À VENIR
             let othersHTML = '';
             for(let i = matchSemaineIdx + 1; i < matchsData.length; i++) {
                 othersHTML += createMatchCardHTML(matchsData[i], false);
@@ -853,7 +897,7 @@
             const showEmail = document.getElementById('profile-show-email').checked;
 
             if(!newEmail) {
-                alert("L'adresse email est obligatoire pour recevoir les notifications de matchs et rappels de présence !");
+                alert("L'adresse email est obligatoire !");
                 return;
             }
 
@@ -879,32 +923,12 @@
                             delete userPresences[code][oldEmail];
                         }
                     }
-                    localStorage.setItem('ff_presences', JSON.stringify(userPresences));
-                }
-
-                if(matchStats) {
-                    for(let code in matchStats) {
-                        let st = matchStats[code];
-                        if(st.boulet === oldEmail) st.boulet = newEmail;
-                        if(st.goals) {
-                            st.goals.forEach(g => {
-                                if(g.scorer === oldEmail) g.scorer = newEmail;
-                                if(g.assist === oldEmail) g.assist = newEmail;
-                            });
-                        }
-                        if(st.cards) {
-                            st.cards.forEach(c => {
-                                if(c.player === oldEmail) c.player = newEmail;
-                            });
-                        }
-                    }
-                    localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
                 }
             } else {
                 userAvatars[currentUser.email] = canvasData;
             }
-            localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
-
+            
+            userAvatars[currentUser.email] = canvasData;
             currentUser.surnom = newSurnom;
             currentUser.email = newEmail;
             currentUser.showEmail = showEmail;
@@ -915,16 +939,19 @@
             } else {
                 joueursData.push(currentUser);
             }
+            
             localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
-
+            localStorage.setItem('ff_user_avatars', JSON.stringify(userAvatars));
             sessionStorage.setItem('ff_logged_user', currentUser.email);
+
+            saveDataToCloud(); // Synchronisation Cloud de l'avatar et du profil
 
             closeProfileModal();
             updateUserBar();
             initSelects();
             renderRoster();
             renderMatches();
-            alert("Profil mis à jour avec succès ! Vos paramètres d'e-mail pour les notifications sont enregistrés.");
+            alert("Profil mis à jour avec succès !");
         }
 
         function closeProfileModal() { 
@@ -939,17 +966,16 @@
                 j.isAdmin = newRole.toLowerCase().includes('administrateur');
                 
                 localStorage.setItem('ff_joueurs_custom', JSON.stringify(joueursData));
+                saveDataToCloud();
                 
                 if(currentUser && currentUser.email === email) {
                     currentUser = j;
                     updateUserBar();
                 }
-                
                 renderRoster();
             }
         }
 
-        // --- ENVOI D'EMAILS DE RAPPEL (EMAILJS) ---
         function sendReminderEmail(playerEmail, playerName) {
             if (!playerEmail) {
                 alert("Ce joueur n'a pas d'adresse e-mail valide.");
@@ -973,10 +999,8 @@
 
             emailjs.send('Fast Foot', 'Fast Foot - Notification', templateParams, 'vmRWVlpoKy2Jf4I4f')
                 .then(function(response) {
-                    console.log('E-mail envoyé avec succès !', response.status, response.text);
                     alert("Rappel envoyé avec succès à " + playerName + " !");
                 }, function(error) {
-                    console.error('Erreur lors de l\'envoi...', error);
                     alert("Erreur EmailJS : " + JSON.stringify(error));
                 });
         }
@@ -1002,7 +1026,7 @@
                     count++;
                 }
             });
-            alert(`Rappels envoyés à ${count} joueurs pour le match ${m.code} !`);
+            alert(`Rappels envoyés à ${count} joueurs !`);
         }
 
         let currentAdminMatch = null;
@@ -1056,6 +1080,7 @@
             
             matchStats[currentAdminMatch] = tempMatchStats;
             localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
+            saveDataToCloud();
             closeMatchAdminModal();
             renderMatches();
             renderRankings();
@@ -1077,7 +1102,8 @@
             });
 
             const drawTable = (id, dataObj, formatFn) => {
-                const tbody = document.querySelector(`#${id} tbody`); tbody.innerHTML = '';
+                const tbody = document.querySelector(`#${id} tbody`); if(!tbody) return;
+                tbody.innerHTML = '';
                 const sorted = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
                 if(sorted.length===0) tbody.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucune donnée</td></tr>`;
                 sorted.forEach(([email, val]) => { tbody.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${formatFn(val)}</td></tr>`; });
@@ -1087,14 +1113,18 @@
             drawTable('table-passeurs', passeurs, v => `<strong>${v}</strong> passe(s)`);
             drawTable('table-boulets', boulets, v => `<strong>${v}</strong> fois`);
             
-            const tbodyC = document.querySelector(`#table-cartons tbody`); tbodyC.innerHTML = '';
-            const sortedC = Object.entries(cartons).sort((a,b) => (b[1].r*3 + b[1].j) - (a[1].r*3 + a[1].j));
-            if(sortedC.length===0) tbodyC.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucun carton</td></tr>`;
-            sortedC.forEach(([email, val]) => { tbodyC.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${val.j} 🟨 / ${val.r} 🟥</td></tr>`; });
+            const tbodyC = document.querySelector(`#table-cartons tbody`); 
+            if(tbodyC) {
+                tbodyC.innerHTML = '';
+                const sortedC = Object.entries(cartons).sort((a,b) => (b[1].r*3 + b[1].j) - (a[1].r*3 + a[1].j));
+                if(sortedC.length===0) tbodyC.innerHTML = `<tr><td style="color:var(--ink-soft); font-style:italic;">Aucun carton</td></tr>`;
+                sortedC.forEach(([email, val]) => { tbodyC.innerHTML += `<tr><td><strong>${getPlayerName(email)}</strong></td><td>${val.j} 🟨 / ${val.r} 🟥</td></tr>`; });
+            }
         }
 
         function renderRoster() {
-            const tbody = document.querySelector('#roster-table-el tbody'); tbody.innerHTML = '';
+            const tbody = document.querySelector('#roster-table-el tbody'); if(!tbody) return;
+            tbody.innerHTML = '';
             const thEmail = document.getElementById('th-email-header');
             const thRole = document.getElementById('th-role-header');
             const thAction = document.getElementById('th-action-header');
@@ -1225,19 +1255,6 @@
                         location: locationSelect === 'Autre' ? 'Autre' : locationSelect, 
                         address: address || "Chau. de Wavre 99, 1390 Grez-Doiceau"
                     };
-                    
-                    if(originalCode !== code) {
-                        if(userPresences[originalCode]) {
-                            userPresences[code] = userPresences[originalCode];
-                            delete userPresences[originalCode];
-                            localStorage.setItem('ff_presences', JSON.stringify(userPresences));
-                        }
-                        if(matchStats[originalCode]) {
-                            matchStats[code] = matchStats[originalCode];
-                            delete matchStats[originalCode];
-                            localStorage.setItem('ff_match_stats', JSON.stringify(matchStats));
-                        }
-                    }
                 }
                 alert("Match modifié avec succès !");
                 cancelEditMatch();
@@ -1263,6 +1280,7 @@
             matchsData.sort((a, b) => new Date(a.fullDate || '2026-01-01') - new Date(b.fullDate || '2026-01-01'));
 
             localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
+            saveDataToCloud();
             renderMatches();
             renderAdminMatchesList();
         }
@@ -1314,25 +1332,10 @@
             if(index !== -1) {
                 matchsData.splice(index, 1);
                 localStorage.setItem('ff_custom_matchs', JSON.stringify(matchsData));
+                saveDataToCloud();
                 renderMatches();
                 renderAdminMatchesList();
             }
-        }
-        
-        // --- FONCTION DE NETTOYAGE DES VOTES FANTOMES (FF) ---
-        function cleanGhostVotes() {
-            let count = 0;
-            for(let code in userPresences) {
-                for(let email in userPresences[code]) {
-                    if(!getPlayer(email)) {
-                        delete userPresences[code][email];
-                        count++;
-                    }
-                }
-            }
-            localStorage.setItem('ff_presences', JSON.stringify(userPresences));
-            renderMatches();
-            alert(`Nettoyage terminé ! ${count} vote(s) fantôme(s) supprimé(s).`);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
